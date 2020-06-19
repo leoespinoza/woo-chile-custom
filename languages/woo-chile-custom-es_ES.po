@@ -1,0 +1,183 @@
+# Copyright (C) 2020 Chile customization for woocommerce
+# This file is distributed under the same license as the Chile customization for woocommerce package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Chile customization for woocommerce 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-chile-custom\n"
+"POT-Creation-Date: 2020-01-12 10:22:18+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2020-06-08 02:44-0400\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.3.1\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es\n"
+
+#. Plugin Name of the plugin/theme
+msgid "Chile customization for woocommerce"
+msgstr "Personalización de Woocommerce para Chile"
+
+#. Description of the plugin/theme
+msgid "Chile customization for WooCommerce and checkout fields Editor(Add, Edit, Delete and re-arrange fields)."
+msgstr "Personalización de Woocommerce para Chile y editor de los campos de pago de WooCommerce (Agregar, Editar, Eliminar y reorganizar los campos)."
+
+#: classes/class-wc-checkout-field-editor.php:30
+msgid "WooCommerce Checkout Form Designer"
+msgstr "Diseñador de formulario de pago (Checkout) de WooCommerce"
+
+#: classes/class-wc-checkout-field-editor.php:30
+msgid "Checkout Form"
+msgstr "Formulario de Pago (Checkout)"
+
+#: classes/class-wc-checkout-field-editor.php:47
+msgid "Settings"
+msgstr "Configuración"
+
+#: classes/class-wc-checkout-field-editor.php:96
+msgid "SUCCESS: Checkout fields successfully reset"
+msgstr "ÉXITO: los campos de pago se restablecieron correctamente"
+
+#: classes/class-wc-checkout-field-editor.php:390
+msgid "Fields"
+msgstr "Campos"
+
+#: classes/class-wc-checkout-field-editor.php:431
+msgid "+ Add field"
+msgstr "+ Agregar campo"
+
+msgid "Add field"
+msgstr "Agregar campo"
+
+#: classes/class-wc-checkout-field-editor.php:432
+msgid "Remove"
+msgstr "Eliminar"
+
+#: classes/class-wc-checkout-field-editor.php:433
+msgid "Enable"
+msgstr "Habilitar"
+
+#: classes/class-wc-checkout-field-editor.php:434
+msgid "Disable"
+msgstr "Deshabilitar"
+
+#: classes/class-wc-checkout-field-editor.php:437
+msgid "Save changes"
+msgstr "Guardar cambios"
+
+#: classes/class-wc-checkout-field-editor.php:438
+msgid "Reset to default fields"
+msgstr "Restablecer a los campos predeterminados"
+
+#: classes/class-wc-checkout-field-editor.php:589
+msgid "Edit"
+msgstr "Editar"
+
+#: classes/class-wc-checkout-field-editor.php:717
+msgid "Your changes were saved."
+msgstr "Tus cambios fueron guardados."
+
+#: classes/class-wc-checkout-field-editor.php:719
+msgid "Your changes were not saved due to an error (or you made none!)."
+msgstr "Sus cambios no se guardaron debido a un error (¡o no realizó ninguno!)."
+
+#: classes/class-wc-checkout-field-editor.php:489
+msgid "Name"
+msgstr "Nombre"
+
+#: classes/class-wc-checkout-field-editor.php:490
+msgid "Type"
+msgstr "Tipo"
+
+#: classes/class-wc-checkout-field-editor.php:491
+msgid "Label"
+msgstr "Etiqueta (Label)"
+
+#: classes/class-wc-checkout-field-editor.php:492
+msgid "Placeholder"
+msgstr "Placeholder"
+
+#: classes/class-wc-checkout-field-editor.php:493
+msgid "Validation Rules"
+msgstr "Reglas de validación"
+
+#: classes/class-wc-checkout-field-editor.php:494
+msgid "Required"
+msgstr "Requerido"
+
+#: classes/class-wc-checkout-field-editor.php:495
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: classes/class-wc-checkout-field-editor.php:290
+msgid "Class"
+msgstr "Clase"
+
+#: classes/class-wc-checkout-field-editor.php:298
+msgid "Validation"
+msgstr "Validación"
+
+#: classes/class-wc-checkout-field-editor.php:316
+msgid "Clear Row"
+msgstr "Limpiar Fila"
+
+#: classes/class-wc-checkout-field-editor.php:326
+msgid "Display in Emails"
+msgstr "Mostrar en correo electrónico"
+
+#: classes/class-wc-checkout-field-editor.php:333
+msgid "Display in Order Detail Pages"
+msgstr "Mostrar en páginas de detalle de pedido"
+
+#: classes/class-wc-checkout-field-editor.php:257
+msgid "New Checkout Field"
+msgstr "Nuevo campo de pago"
+
+#: classes/class-wc-checkout-field-editor.php:246
+msgid "Text"
+msgstr "Texto"
+
+#: classes/class-wc-checkout-field-editor.php:247
+msgid "Select"
+msgstr "Selección"
+
+#: classes/class-wc-checkout-field-editor.php:303
+msgid "Phone"
+msgstr "Teléfono"
+
+#: classes/class-wc-checkout-field-editor.php:302
+msgid "Email"
+msgstr "Email"
+
+#: classes/class-wc-checkout-field-editor.php:304
+msgid "Postcode"
+msgstr "Código postal"
+
+#: classes/class-wc-checkout-field-editor.php:305
+msgid "State"
+msgstr "Estado"
+
+#: classes/class-wc-checkout-field-editor.php:438
+msgid "Checkout Fields"
+msgstr "Campos de pago (Checkout)"
+
+#: classes/class-wc-checkout-field-editor.php:438
+msgid "Billing Fields"
+msgstr "Campos de Facturación (Billing)"
+
+#: classes/class-wc-checkout-field-editor.php:438
+msgid "Shipping Fields"
+msgstr "Campos de Despacho (Shipping)"
+
+#: classes/class-wc-checkout-field-editor.php:438
+msgid "Additional Fields"
+msgstr "Campos Adicionales"
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Priority"
+msgstr "Prioridad"
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Validations"
+msgstr "Validaciones"

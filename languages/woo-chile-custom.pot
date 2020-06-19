@@ -1,0 +1,179 @@
+# Copyright (C) 2020 Chile customization for woocommerce
+# This file is distributed under the same license as the Chile customization for woocommerce package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Chile customization for woocommerce 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-chile-custom\n"
+"POT-Creation-Date: 2020-01-12 10:22:18+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2020-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#. Plugin Name of the plugin/theme
+msgid "Chile customization for woocommerce"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Chile customization for WooCommerce and checkout fields Editor(Add, Edit, Delete and re-arrange fields)."
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:30
+msgid "WooCommerce Checkout Form Designer"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:30
+msgid "Checkout Form"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:47
+msgid "Settings"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:96
+msgid "SUCCESS: Checkout fields successfully reset"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:390
+msgid "Fields"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:431
+msgid "+ Add field"
+msgstr ""
+msgid "Add field"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:432
+msgid "Remove"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:433
+msgid "Enable"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:434
+msgid "Disable"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:437
+msgid "Save changes"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Reset to default fields"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:589
+msgid "Edit"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:717
+msgid "Your changes were saved."
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:719
+msgid "Your changes were not saved due to an error (or you made none!)."
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:489
+msgid "Name"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:490
+msgid "Type"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:491
+msgid "Label"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:492
+msgid "Placeholder"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:493
+msgid "Validation Rules"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:494
+msgid "Required"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:495
+msgid "Enabled"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:290
+msgid "Class"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:298
+msgid "Validation"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:316
+msgid "Clear Row"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:326
+msgid "Display in Emails"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:333
+msgid "Display in Order Detail Pages"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:257
+msgid "New Checkout Field"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:246
+msgid "Text"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:247
+msgid "Select"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:303
+msgid "Phone"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:302
+msgid "Email"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:304
+msgid "Postcode"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:305
+msgid "State"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Checkout Fields"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Billing Fields"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Shipping Fields"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Additional Fields"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Priority"
+msgstr ""
+
+#: classes/class-wcscl-checkout.php:438
+msgid "Validations"
+msgstr ""
