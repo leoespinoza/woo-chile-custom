@@ -78,19 +78,19 @@ class WCSCL_Fields {
 	}
 	
 	public function render_actions_row($section){
-		?>
-        <th colspan="6">
-            <button type="button" class="button button-primary" onclick="wcsclOpenNewFieldForm('<?php echo $section; ?>')">+ <?php WOOCFCL_Utils::etranslate( 'Add field' ); ?></button>
-            <button type="button" class="button" onclick="wcsclRemoveSelectedFields()"><?php WOOCFCL_Utils::etranslate('Remove'); ?></button>
-            <button type="button" class="button" onclick="wcsclEnableSelectedFields()"><?php WOOCFCL_Utils::etranslate('Enable'); ?></button>
-            <button type="button" class="button" onclick="wcsclDisableSelectedFields()"><?php WOOCFCL_Utils::etranslate('Disable'); ?></button>
-        </th>
+	?>
+	<th colspan="6">
+		<button type="button" class="button button-primary" onclick="wcsclOpenNewFieldForm('<?php echo $section; ?>')">+ <?php WOOCFCL_Utils::etranslate( 'Add field' ); ?></button>
+		<button type="button" class="button" onclick="wcsclRemoveSelectedFields()"><?php WOOCFCL_Utils::etranslate('Remove'); ?></button>
+		<button type="button" class="button" onclick="wcsclEnableSelectedFields()"><?php WOOCFCL_Utils::etranslate('Enable'); ?></button>
+		<button type="button" class="button" onclick="wcsclDisableSelectedFields()"><?php WOOCFCL_Utils::etranslate('Disable'); ?></button>
+	</th>
         <th colspan="4">
-        	<input type="submit" name="save_fields" class="button-primary" value="<?php WOOCFCL_Utils::etranslate( 'Save changes' ) ?>" style="float:right" />
-            <input type="submit" name="reset_fields" class="button" value="<?php WOOCFCL_Utils::etranslate( 'Reset to default fields') ?>" style="float:right; margin-right: 5px;" 
-			onclick="return confirm('Are you sure you want to reset to default fields? all your changes will be deleted.');"/>
-        </th>  
-    	<?php 
+		<input type="submit" name="save_fields" class="button-primary" value="<?php WOOCFCL_Utils::etranslate( 'Save changes' ) ?>" style="float:right" />
+		<input type="submit" name="reset_fields" class="button" value="<?php WOOCFCL_Utils::etranslate( 'Reset to default fields') ?>" style="float:right; margin-right: 5px;" 
+		onclick="return confirm('Are you sure you want to reset to default fields? all your changes will be deleted.');"/>
+	</th>  
+	<?php 
 	}
 
 	public function output_content() {
@@ -106,101 +106,88 @@ class WCSCL_Fields {
 		if(isset($_POST['save_fields']))
 			echo $this->save_fields($section);
 
-		$fields = WCSCL_Utils::get_fields($section);	
-	    $v = var_export(WOOCFCL()->states->defaults, true);
+		$fields = WCSCL_Utils::get_fields($section);
+		
         
 		?> 
 		<div class="wrap woocommerce">
-		   <?php  echo $v;
+		<?php  
+				// echo ' <br/><br/><br/>app_default<br/><br/>  '; 
+				// //$v = var_export(WOOCFCL()->app->getTableOption());
+				WOOCFCL()->app->printToArray();		
 
-				echo  '<br/><br/><br/>'; 
-				echo ' <br/><br/><br/>states_woocomtesdt  '; 
-				$v = var_export(WOOCFCL()->states->load_country_states_woo());
-				 
-				echo ' <br/> '.$v. '  ';  
+				WOOCFCL()->states->printToArray();
 
-				echo  '<br/><br/><br/>'; 
-				echo ' <br/>states_woocom  ';  
-				$v = var_export(WOOCFCL()->states->states_woocom);
-				echo ' <br/> '.$v. '  ';  
-
-				echo ' <br/>states_plugin  '; 
-				$v = var_export(WOOCFCL()->states->states_plugin); 
-				echo ' <br/> '.$v. '  ';  
-				
-				echo ' <br/>states_full  '; 
-				$v = var_export(WOOCFCL()->states->states_full); 
-				echo ' <br/> '.$v. '  ';  					
-				
+				 WOOCFCL()->cities->printToArray();
 				?></div>           
         <div class="wrap woocommerce"><div class="icon32 icon32-attributes" id="icon-woocommerce"><br /></div>
 		<form method="post" id="wcfd_checkout_fields_form" action="">
-        	<table id="wcscl_checkout_fields" class="thpladmin_fields_table" cellspacing="0">
-				<thead>
-                	<tr><?php $this->render_actions_row($section); ?></tr>
-                	<tr><?php $this->render_checkout_fields_heading_row(); ?></tr>						
-				</thead>
-                <tfoot>
-                	<tr><?php $this->render_checkout_fields_heading_row(); ?></tr>
-					<tr><?php $this->render_actions_row($section); ?></tr>
-				</tfoot>
-				<tbody class="ui-sortable">
-	                <?php 
-					$i=0;
-					foreach( $fields as $name => $field ) :
-						$type = isset($field['type']) ? $field['type'] : '';
-						$label = isset($field['label']) ? $field['label'] : '';
-						$priority = isset($field['priority']) ? $field['priority'] : '';
-						$placeholder = isset($field['placeholder']) ? $field['placeholder'] : '';
-						$validate = isset($field['validate']) ? $field['validate'] : '';
-						$required = isset($field['required']) && $field['required'] ? 1 : 0;
-						$enabled = isset($field['enabled']) && $field['enabled'] ? 1 : 0;
-						$custom = isset($field['custom']) && $field['custom'] ? 1 : 0;
+        <table id="wcscl_checkout_fields" class="thpladmin_fields_table" cellspacing="0">
+			<thead>
+			<tr><?php $this->render_actions_row($section); ?></tr>
+			<tr><?php $this->render_checkout_fields_heading_row(); ?></tr>						
+			</thead>
+			<tfoot>
+			<tr><?php $this->render_checkout_fields_heading_row(); ?></tr>
+				<tr><?php $this->render_actions_row($section); ?></tr>
+			</tfoot>
+			<tbody class="ui-sortable">
+			<?php 
+				$i=0;
+				foreach( $fields as $name => $field ) :
+					$type = isset($field['type']) ? $field['type'] : '';
+					$label = isset($field['label']) ? $field['label'] : '';
+					$priority = isset($field['priority']) ? $field['priority'] : '';
+					$placeholder = isset($field['placeholder']) ? $field['placeholder'] : '';
+					$validate = isset($field['validate']) ? $field['validate'] : '';
+					$required = isset($field['required']) && $field['required'] ? 1 : 0;
+					$enabled = isset($field['enabled']) && $field['enabled'] ? 1 : 0;
+					$custom = isset($field['custom']) && $field['custom'] ? 1 : 0;
 
-						$validate = is_array($validate) ? implode(",", $validate) : '';
+					$validate = is_array($validate) ? implode(",", $validate) : '';
 
-						$required_status = $required ? '<span class="dashicons dashicons-yes tips" data-tip="Yes"></span>' : '-';
-						$enabled_status = $enabled ? '<span class="dashicons dashicons-yes tips" data-tip="Yes"></span>' : '-';
+					$required_status = $required ? '<span class="dashicons dashicons-yes tips" data-tip="Yes"></span>' : '-';
+					$enabled_status = $enabled ? '<span class="dashicons dashicons-yes tips" data-tip="Yes"></span>' : '-';
 
-						$props_json = htmlspecialchars($this->get_property_set_json($name, $field));
-						//$options_json = isset($field['options_json']) && $field['options_json'] ? htmlspecialchars($field['options_json']) : '';
+					$props_json = htmlspecialchars($this->get_property_set_json($name, $field));
+					//$options_json = isset($field['options_json']) && $field['options_json'] ? htmlspecialchars($field['options_json']) : '';
 
-						$options_json = '';
-						if($type === 'select' || $type === 'radio'){
-							$options = isset($field['options']) ? $field['options'] : '';
-							$options_json = WCSCL_Utils::prepare_options_json($options);
-						}
-					?>
-						<tr class="row_<?php echo $i; echo $enabled ? '' : ' thpladmin-disabled' ?>">
-	                    	<td width="1%" class="sort ui-sortable-handle">
-	                    		<input type="hidden" name="f_name[<?php echo $i; ?>]" class="f_name" value="<?php echo esc_attr($name); ?>" />
-	                    		<input type="hidden" name="f_name_new[<?php echo $i; ?>]" class="f_name_new" value="" />
-								<input type="hidden" name="f_order[<?php echo $i; ?>]" class="f_order" value="<?php echo $i; ?>" />
-								<input type="hidden" name="f_deleted[<?php echo $i; ?>]" class="f_deleted" value="0" />
-								<input type="hidden" name="f_enabled[<?php echo $i; ?>]" class="f_enabled" value="<?php echo $enabled; ?>" />
-								<input type="hidden" name="f_props[<?php echo $i; ?>]" class="f_props" value='<?php echo $props_json; ?>' />
-								<input type="hidden" name="f_options[<?php echo $i; ?>]" class="f_options" value='<?php echo $options_json; ?>' />
-	                        </td>
-	                        <td class="td_select"><input type="checkbox" name="select_field"/></td>
-	                        <td class="td_name"><?php echo esc_attr( $name ) ?></td>
-							<th class="td_priority"><?php echo $priority; ?></th>
-	                        <td class="td_type"><?php echo $type; ?></td>
-	                        <td class="td_label"><?php WCSCL_Utils::et($label); ?></td>
-	                        <td class="td_placeholder"><?php WCSCL_Utils::et($placeholder); ?></td>
-	                        <td class="td_validate"><?php echo $validate; ?></td>
-	                        <td class="td_required status"><?php echo $required_status; ?></td>
-	                        <td class="td_enabled status"><?php echo $enabled_status; ?></td>
-	                        <td class="td_edit action">
-	                        	<button type="button" class="button action-btn f_edit_btn" <?php echo($enabled ? '' : 'disabled') ?> 
-	                            onclick="wcsclOpenEditFieldForm(this, <?php echo $i; ?>)"><?php WOOCFCL_Utils::etranslate('Edit'); ?></button>
-	                        </td>
-	                	</tr>
-	                <?php 
-	                	$i++; 
-	                	endforeach; 
-	                ?>
-            	</tbody>
-			</table> 
+					$options_json = '';
+					if($type === 'select' || $type === 'radio'){
+						$options = isset($field['options']) ? $field['options'] : '';
+						$options_json = WCSCL_Utils::prepare_options_json($options);
+					}
+				?>
+				<tr class="row_<?php echo $i; echo $enabled ? '' : ' thpladmin-disabled' ?>">
+					<td width="1%" class="sort ui-sortable-handle">
+						<input type="hidden" name="f_name[<?php echo $i; ?>]" class="f_name" value="<?php echo esc_attr($name); ?>" />
+						<input type="hidden" name="f_name_new[<?php echo $i; ?>]" class="f_name_new" value="" />
+						<input type="hidden" name="f_order[<?php echo $i; ?>]" class="f_order" value="<?php echo $i; ?>" />
+						<input type="hidden" name="f_deleted[<?php echo $i; ?>]" class="f_deleted" value="0" />
+						<input type="hidden" name="f_enabled[<?php echo $i; ?>]" class="f_enabled" value="<?php echo $enabled; ?>" />
+						<input type="hidden" name="f_props[<?php echo $i; ?>]" class="f_props" value='<?php echo $props_json; ?>' />
+						<input type="hidden" name="f_options[<?php echo $i; ?>]" class="f_options" value='<?php echo $options_json; ?>' />
+					</td>
+					<td class="td_select"><input type="checkbox" name="select_field"/></td>
+					<td class="td_name"><?php echo esc_attr( $name ) ?></td>
+					<th class="td_priority"><?php echo $priority; ?></th>
+					<td class="td_type"><?php echo $type; ?></td>
+					<td class="td_label"><?php WCSCL_Utils::et($label); ?></td>
+					<td class="td_placeholder"><?php WCSCL_Utils::et($placeholder); ?></td>
+					<td class="td_validate"><?php echo $validate; ?></td>
+					<td class="td_required status"><?php echo $required_status; ?></td>
+					<td class="td_enabled status"><?php echo $enabled_status; ?></td>
+					<td class="td_edit action">
+						<button type="button" class="button action-btn f_edit_btn" <?php echo($enabled ? '' : 'disabled') ?> 
+						onclick="wcsclOpenEditFieldForm(this, <?php echo $i; ?>)"><?php WOOCFCL_Utils::etranslate('Edit'); ?></button>
+					</td>
+				</tr>
+				<?php 
+					$i++; 
+					endforeach; 
+				?>
+			</tbody>
+		</table> 
         </form>
         <?php
         $this->output_add_field_form_pp();
@@ -423,68 +410,68 @@ class WCSCL_Fields {
 	}
 
 	private function output_add_field_form_pp(){
-		?>
-        <div id="wcscl_new_field_form_pp" title="New Checkout Field" class="thpladmin-popup-wrapper">
-          <?php $this->output_popup_form_fields('new'); ?>
-        </div>
-        <?php
+	?>
+	<div id="wcscl_new_field_form_pp" title="New Checkout Field" class="thpladmin-popup-wrapper">
+		<?php $this->output_popup_form_fields('new'); ?>
+	</div>
+	<?php
 	}
 		
 	private function output_edit_field_form_pp(){		
-		?>
-        <div id="wcscl_edit_field_form_pp" title="Edit Checkout Field" class="thpladmin-popup-wrapper">
-          <?php $this->output_popup_form_fields('edit'); ?>
-        </div>
-        <?php
+	?>
+	<div id="wcscl_edit_field_form_pp" title="Edit Checkout Field" class="thpladmin-popup-wrapper">
+		<?php $this->output_popup_form_fields('edit'); ?>
+	</div>
+	<?php
 	}
 
 	private function output_popup_form_fields($form_type){
-		$field_props = $this->get_field_form_props();
+	$field_props = $this->get_field_form_props();
 
-		?>
-		<form method="post" id="wcscl_<?php echo $form_type ?>_field_form" action="">
-          	<input type="hidden" name="f_action" value="<?php echo $form_type ?>" />
-          	<input type="hidden" name="i_autocomplete" value="" />
-          	<input type="hidden" name="i_priority" value="" />
-          	<input type="hidden" name="i_custom" value="" />
-          	<input type="hidden" name="i_oname" value="" />
-          	<input type="hidden" name="i_otype" value="" />
-          	<input type="hidden" name="i_options_json" value="" />
+	?>
+	<form method="post" id="wcscl_<?php echo $form_type ?>_field_form" action="">
+		<input type="hidden" name="f_action" value="<?php echo $form_type ?>" />
+		<input type="hidden" name="i_autocomplete" value="" />
+		<input type="hidden" name="i_priority" value="" />
+		<input type="hidden" name="i_custom" value="" />
+		<input type="hidden" name="i_oname" value="" />
+		<input type="hidden" name="i_otype" value="" />
+		<input type="hidden" name="i_options_json" value="" />
 
-          	<table width="100%">
-            	<tr>                
-                	<td colspan="2" class="err_msgs"></td>
-				</tr>
-            	<?php 
-            	$this->render_form_field_element($field_props['type']);
-            	$this->render_form_field_element($field_props['name']);
-            	$this->render_form_field_element($field_props['label']);
-            	$this->render_form_field_element($field_props['placeholder']);
-            	$this->render_form_field_element($field_props['default']);
-            	$this->render_form_field_element($field_props['class']);
-            	//$this->render_form_field_element($field_props['disp_style']);
-            	$this->render_form_field_element($field_props['validate']);
-            	//$this->render_form_field_element($field_props['options']);
-            	$this->render_form_element_h_spacing();
-            	$this->render_field_form_fragment_options();
-            	$this->render_form_element_h_spacing();
+		<table width="100%">
+			<tr>                
+				<td colspan="2" class="err_msgs"></td>
+			</tr>
+			<?php 
+			$this->render_form_field_element($field_props['type']);
+			$this->render_form_field_element($field_props['name']);
+			$this->render_form_field_element($field_props['label']);
+			$this->render_form_field_element($field_props['placeholder']);
+			$this->render_form_field_element($field_props['default']);
+			$this->render_form_field_element($field_props['class']);
+			//$this->render_form_field_element($field_props['disp_style']);
+			$this->render_form_field_element($field_props['validate']);
+			//$this->render_form_field_element($field_props['options']);
+			$this->render_form_element_h_spacing();
+			$this->render_field_form_fragment_options();
+			$this->render_form_element_h_spacing();
 
-            	?>
-            	<tr class="row-required">
-                	<td>&nbsp;</td>                     
-                    <td>
-                    	<?php 
-		            	$this->render_form_field_element($field_props['required']);
-		            	//$this->render_form_field_element($field_props['clear']);
-		            	$this->render_form_field_element($field_props['enabled']);
-		            	$this->render_form_field_element($field_props['show_in_email']);
-		            	$this->render_form_field_element($field_props['show_in_order']);
-		            	?>
-                    </td>
-                </tr>                       
-            </table>
-        </form>
-        <?php
+			?>
+			<tr class="row-required">
+				<td>&nbsp;</td>                     
+				<td>
+					<?php 
+					$this->render_form_field_element($field_props['required']);
+					//$this->render_form_field_element($field_props['clear']);
+					$this->render_form_field_element($field_props['enabled']);
+					$this->render_form_field_element($field_props['show_in_email']);
+					$this->render_form_field_element($field_props['show_in_order']);
+					?>
+				</td>
+			</tr>                       
+		</table>
+	</form>
+	<?php
 	}
 
 	public function render_form_field_element($props){
@@ -504,22 +491,22 @@ class WCSCL_Fields {
 	}
 
 	private function render_form_field_element_inputtext($props){
-		$name  = isset($props['name']) ? $props['name'] : '';
-		$fname = 'i_'.$name;
-		$label = isset($props['label']) ? WOOCFCL_Utils::translate($props['label']) : '';
+	$name  = isset($props['name']) ? $props['name'] : '';
+	$fname = 'i_'.$name;
+	$label = isset($props['label']) ? WOOCFCL_Utils::translate($props['label']) : '';
 
-		$field_attr = 'name="'.$fname.'" value=""';
-		if(isset($props['placeholder']) && $props['placeholder']){
-			$field_attr .= ' placeholder="'.WOOCFCL_Utils::translate($props['placeholder']).'"';
-		}
-		$field_attr .= ' style="width:250px;"';
-		
-		?>
-		<tr class="<?php echo 'row-'.$name; ?>">                
-        	<td width="30%"><?php echo $label; ?></td>
-            <td><input type="text" <?php echo $field_attr; ?> /></td>
-		</tr>
-		<?php
+	$field_attr = 'name="'.$fname.'" value=""';
+	if(isset($props['placeholder']) && $props['placeholder']){
+		$field_attr .= ' placeholder="'.WOOCFCL_Utils::translate($props['placeholder']).'"';
+	}
+	$field_attr .= ' style="width:250px;"';
+	
+	?>
+	<tr class="<?php echo 'row-'.$name; ?>">                
+		<td width="30%"><?php echo $label; ?></td>
+		<td><input type="text" <?php echo $field_attr; ?> /></td>
+	</tr>
+	<?php
 	}
 
 	private function render_form_field_element_select($props){
@@ -547,17 +534,17 @@ class WCSCL_Fields {
 		}
 
 		?>
-		<tr class="<?php echo 'row-'.$name; ?>">                
-        	<td width="30%"><?php echo $label; ?></td>
-            <td>
-            	<select <?php echo $field_attr; ?> >
-                <?php foreach($options as $key => $value){ ?>
-                	<option value="<?php echo trim($key); ?>"><?php echo $value; ?></option>
-                <?php } ?>
-                </select>
-            </td>
-		</tr>
-		<?php
+	<tr class="<?php echo 'row-'.$name; ?>">                
+		<td width="30%"><?php echo $label; ?></td>
+		<td>
+			<select <?php echo $field_attr; ?> >
+			<?php foreach($options as $key => $value){ ?>
+				<option value="<?php echo trim($key); ?>"><?php echo $value; ?></option>
+			<?php } ?>
+			</select>
+		</td>
+	</tr>
+	<?php
 	}
 
 	private function render_form_field_element_radio($props){

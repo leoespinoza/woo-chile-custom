@@ -22,7 +22,7 @@ class WCSCL_Utils {
 	}
     public static function instance() {
         if (is_null(self::$_instance)) {
-          self::$_instance = new self();
+			self::$_instance = new self();
         }
         return self::$_instance;
 	}
@@ -256,10 +256,10 @@ class WCSCL_Utils {
 	}
 
 	public static function sort_fields_by_order($a, $b){
-	    if(!isset($a['order']) || $a['order'] == $b['order']){
-	        return 0;
-	    }
-	    return ($a['order'] < $b['order']) ? -1 : 1;
+		if(!isset($a['order']) || $a['order'] == $b['order']){
+			return 0;
+		}
+		return ($a['order'] < $b['order']) ? -1 : 1;
 	}
 
 	public static function get_order_id($order){
@@ -274,8 +274,8 @@ class WCSCL_Utils {
 
 
 	/***********************************
-	 ----- i18n functions - START ------
-	 ***********************************/
+	----- i18n functions - START ------
+	***********************************/
 	public static function t($text){
 		if(!empty($text)){	
 			$otext = $text;						

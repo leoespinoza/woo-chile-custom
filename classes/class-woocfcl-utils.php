@@ -11,7 +11,7 @@ class WOOCFCL_Utils
 {
     
     private static $_instance = null;
-  
+
     /**
      * Constructor.
      *
@@ -23,7 +23,7 @@ class WOOCFCL_Utils
 
     public static function instance() {
         if (is_null(self::$_instance)) {
-          self::$_instance = new self();
+        self::$_instance = new self();
         }
         return self::$_instance;
     }
@@ -41,6 +41,25 @@ class WOOCFCL_Utils
         !defined($name) && define($name, $value);
     }
     
+
+
+    public static function version_check( $version = '1.0.0' ) {
+		return WOOCFCL_VERSION && version_compare( WOOCFCL_VERSION, $version, ">=" ) ? true:false;
+    }
+    
+    /***********************************
+	----- woocommerce functions - START ------
+	***********************************/
+    public static function woo_version_check( $version = '3.0' ) {
+        if(function_exists( 'is_woocommerce_active' ) && is_woocommerce_active() ) {
+            global $woocommerce;
+            if( version_compare( $woocommerce->version, $version, ">=" ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 	/**
 	 * Define if woocommerce active.
 	 *
@@ -50,34 +69,21 @@ class WOOCFCL_Utils
 
 	public static function is_woocommerce_active() {
         if (!function_exists('is_woocommerce_active')){
-                $active_plugins = (array) get_option('active_plugins', array());
-                if(is_multisite()){
-                   $active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
-                }
-                return in_array('woocommerce/woocommerce.php', $active_plugins) || array_key_exists('woocommerce/woocommerce.php', $active_plugins) || class_exists('WooCommerce');
+            $active_plugins = (array) get_option('active_plugins', array());
+            if(is_multisite()){
+                $active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
+            }
+            return in_array('woocommerce/woocommerce.php', $active_plugins) || array_key_exists('woocommerce/woocommerce.php', $active_plugins) || class_exists('WooCommerce');
         }
         else return is_woocommerce_active();
     }
 
-    public static function version_check( $version = '1.0.0' ) {
-		if(WOOCFCL_VERSION && version_compare( WOOCFCL_VERSION, $version, ">=" ) ) {
-	  		return true;
-		}
-	  	return false;
+    public function woo_get_allowed_countries(){
+        return array_merge(WC()->countries->get_allowed_countries(), WC()->countries->get_shipping_countries());
     }
-    
-    public static function woo_version_check( $version = '3.0' ) {
-        if(function_exists( 'is_woocommerce_active' ) && is_woocommerce_active() ) {
-          global $woocommerce;
-          if( version_compare( $woocommerce->version, $version, ">=" ) ) {
-                return true;
-          }
-        }
-        return false;
-    }
-    
+
     /***********************************
-	 ----- i18n functions - START ------
+	----- i18n functions - START ------
 	***********************************/
 	public static function t($text){
 		if(!empty($text)){	
@@ -134,27 +140,35 @@ class WOOCFCL_Utils
     
     
     /***********************************
-	 ----- utilities functions - START ------
+	----- utilities functions - START ------
 	***********************************/
     
     public static function array_equal($a, $b) {
 		return (
-			 is_array($a) 
-			 && is_array($b) 
-			 && count($a) == count($b) 
-			 && array_diff($a, $b) === array_diff($b, $a)
+            is_array($a) 
+            && is_array($b) 
+            && count($a) == count($b) 
+            && array_diff($a, $b) === array_diff($b, $a)
 		);
     }
     public static function array_empty($a) {
-        if (!is_array($a)) { return  true;} 
+        if (!is_array($a) || is_null($a)) { return  true;} 
 		return (
-			 empty($a) 
-			 || count($a) == 0 
-			 || sizeof($a) == 0 
+            empty($a) 
+            || count($a) == 0 
+            || sizeof($a) == 0 
 		);
 	}
     public static function is_blank($value) {
 		return empty($value) && !is_numeric($value);
+    }
+    
+    public static function bool_fromvalue($value) {
+		return !empty($value) && $value=='yes'?true:false;
+    }
+    
+    public static function bool_valueto($value) {
+		return !empty($value) && $value==true?'yes':'no';
 	}
 }
 endif;    

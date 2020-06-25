@@ -117,13 +117,11 @@ class WOOCFCL {
 		WOOCFCL_Utils::define('WOOCFCL_ACTION_LINK', 'woo_chile_designer');	
 
 		WOOCFCL_Utils::define('WOOCFCL_PATH_CLASS', WOOCFCL_PATH .'classes/');
-		WOOCFCL_Utils::define('WOOCFCL_PATH_STATES', WOOCFCL_PATH .'states/');
-		WOOCFCL_Utils::define('WOOCFCL_PATH_CITIES', WOOCFCL_PATH .'cities/');
+		WOOCFCL_Utils::define('WOOCFCL_PATH_STATES', WOOCFCL_PATH .'i18n/states/');
+		WOOCFCL_Utils::define('WOOCFCL_PATH_CITIES', WOOCFCL_PATH .'i18n/cities/');
 
-		WOOCFCL_Utils::define('WCSCL_URL', plugins_url( '../', __FILE__ ));
-		WOOCFCL_Utils::define('WCSCL_ASSETS_URL', WCSCL_URL .'assets/');
-
-		
+		WOOCFCL_Utils::define('WOOCFCL_URL', plugins_url( '../', __FILE__ ));
+		WOOCFCL_Utils::define('WOOCFCL_ASSETS_URL', WOOCFCL_URL .'assets/');
 	}
 
 
@@ -131,11 +129,12 @@ class WOOCFCL {
 		if(!function_exists('is_plugin_active')){
 			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		}
-		require_once WOOCFCL_PATH_CLASS . 'class-wcscl-options.php';
-		require_once WOOCFCL_PATH_CLASS . 'class-wcscl-app-options.php';
-		require_once WOOCFCL_PATH_CLASS . 'class-woocclf-states.php';
+		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-options.php';
+		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-appoptions.php';
+		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-states.php';
+		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-cities.php';
+		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-admin.php';
 		require_once WOOCFCL_PATH_CLASS . 'class-wcscl-utils.php';
-		require_once WOOCFCL_PATH_CLASS . 'class-wcscl-admin.php';
 		require_once WOOCFCL_PATH_CLASS . 'class-wcscl-fields.php';
 		require_once WOOCFCL_PATH_CLASS . 'class-wcscl-checkout.php';
 
@@ -149,12 +148,15 @@ class WOOCFCL {
 		load_plugin_textdomain(WOOCFCL_TEXT_DOMAIN, false, WOOCFCL_BASE_NAME . '/languages/');
 	}
 	private function set_global_options() {
-		$this->app=new WCSCL_AppOptions();
-		$this->states=new WOOCCLF_States();
+		$this->app=new WOOCFCL_AppOptions();
+		$this->states=new WOOCFCL_States();
+		$this->states->init($this->app);
+		$this->cities=new WOOCFCL_Cities();
+		$this->cities->init($this->app);
 	}
 
 	private function set_admin_hooks() {
-		$plugin_admin = new WCSCL_Admin();
+		$plugin_admin = new WOOCFCL_Admin();
 	}
 
 	private function set_public_hooks() {
