@@ -1,25 +1,25 @@
-var wcscl_settings = (function($, window, document) {
+var woocfcl_settings = (function($, window, document) {
 	'use strict';
 
 	var MSG_INVALID_NAME = 'NAME/ID must begin with a lowercase letter ([a-z]) and may be followed by any number of lowercase letters, digits ([0-9]) and underscores ("_")';
 	var OPTION_ROW_HTML  = '<tr>';
         OPTION_ROW_HTML += '<td style="width:150px;"><input type="text" name="i_options_key[]" placeholder="Option Value" style="width:140px;"/></td>';
 		OPTION_ROW_HTML += '<td style="width:190px;"><input type="text" name="i_options_text[]" placeholder="Option Text" style="width:180px;"/></td>';
-		OPTION_ROW_HTML += '<td class="action-cell"><a href="javascript:void(0)" onclick="wcsclAddNewOptionRow(this)" class="btn btn-blue" title="Add new option">+</a></td>';
-		OPTION_ROW_HTML += '<td class="action-cell"><a href="javascript:void(0)" onclick="wcsclRemoveOptionRow(this)" class="btn btn-red" title="Remove option">x</a></td>';
+		OPTION_ROW_HTML += '<td class="action-cell"><a href="javascript:void(0)" onclick="woocfclAddNewOptionRow(this)" class="btn btn-blue" title="Add new option">+</a></td>';
+		OPTION_ROW_HTML += '<td class="action-cell"><a href="javascript:void(0)" onclick="woocfclRemoveOptionRow(this)" class="btn btn-red" title="Remove option">x</a></td>';
 		OPTION_ROW_HTML += '<td class="action-cell sort ui-sortable-handle"></td>';
 		OPTION_ROW_HTML += '</tr>';
 
 	$(function() {
-		$( "#wcscl_new_field_form_pp" ).dialog({
-		  	modal: true,
+		$( "#woocfcl_new_field_form_pp" ).dialog({
+			modal: true,
 			width: 600,
 			resizable: false,
 			autoOpen: false,
 			buttons: [{
 				text: "Save",
 				click: function() {
-					var form = $("#wcscl_new_field_form");
+					var form = $("#woocfcl_new_field_form");
 					var valid = validate_field_form(form);
 					if(valid){ 
 						prepare_field_form(form);
@@ -29,15 +29,15 @@ var wcscl_settings = (function($, window, document) {
 			}]
 		});
 		
-		$( "#wcscl_edit_field_form_pp" ).dialog({
-		  	modal: true,
+		$( "#woocfcl_edit_field_form_pp" ).dialog({
+			modal: true,
 			width: 600,
 			resizable: false,
 			autoOpen: false,
 			buttons: [{
 				text: "Save",
 				click: function() {
-					var form = $("#wcscl_edit_field_form");
+					var form = $("#woocfcl_edit_field_form");
 					var valid = validate_field_form(form);
 					if(valid){ 
 						prepare_field_form(form);
@@ -47,13 +47,13 @@ var wcscl_settings = (function($, window, document) {
 			}]
 		});
 
-		$('select.wcscl-enhanced-multi-select').select2({
+		$('select.woocfcl-enhanced-multi-select').select2({
 			minimumResultsForSearch: 10,
 			allowClear : true,
 			placeholder: $(this).data('placeholder')
 		}).addClass('enhanced');
 
-		$('#wcscl_checkout_fields tbody').sortable({
+		$('#woocfcl_checkout_fields tbody').sortable({
 			items:'tr',
 			cursor:'move',
 			axis:'y',
@@ -68,10 +68,10 @@ var wcscl_settings = (function($, window, document) {
 			}
 		});
 
-		$("#wcscl_checkout_fields tbody").on("sortstart", function( event, ui ){
+		$("#woocfcl_checkout_fields tbody").on("sortstart", function( event, ui ){
 			ui.item.css('background-color','#f6f6f6');										
 		});
-		$("#wcscl_checkout_fields tbody").on("sortstop", function( event, ui ){
+		$("#woocfcl_checkout_fields tbody").on("sortstop", function( event, ui ){
 			ui.item.removeAttr('style');
 			prepare_field_order_indexes();
 		});
@@ -85,15 +85,15 @@ var wcscl_settings = (function($, window, document) {
 	function decodeHtml(str) {
 		if($.type(str)=== "string"){
 			var map = {
-	        	'&amp;': '&',
-	        	'&lt;': '<',
-	        	'&gt;': '>',
-	        	'&quot;': '"',
-	        	'&#039;': "'"
-	    	};
-	    	return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) {return map[m];});
+				'&amp;': '&',
+				'&lt;': '<',
+				'&gt;': '>',
+				'&quot;': '"',
+				'&#039;': "'"
+			};
+			return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) {return map[m];});
 		}
-	   	return str;
+		return str;
 	}
 
 	function get_property_field_value(form, type, name){
@@ -155,19 +155,19 @@ var wcscl_settings = (function($, window, document) {
 			sname = sname+'_';	
 		}
 		
-		var form = $("#wcscl_new_field_form");
+		var form = $("#woocfcl_new_field_form");
 		clear_field_form(form);
 		form.find("select[name=i_type]").change();
 
 		set_property_field_value(form, 'text', 'name', sname, 0);
 		set_property_field_value(form, 'text', 'class', 'form-row-wide', 0);
 
-	  	$("#wcscl_new_field_form_pp").dialog("open");
+		$("#woocfcl_new_field_form_pp").dialog("open");
 	}
 
 	function openEditFieldForm(elm, rowId){
 		var row = $(elm).closest('tr');
-		var form = $("#wcscl_edit_field_form");
+		var form = $("#woocfcl_edit_field_form");
 
 		var props_json = row.find(".f_props").val();
 		//props_json = decodeHtml(props_json);
@@ -178,7 +178,7 @@ var wcscl_settings = (function($, window, document) {
 		form.find("select[name=i_type]").change();
 		populate_field_form(row, form, props);
 
-	  	$("#wcscl_edit_field_form_pp").dialog("open");
+		$("#woocfcl_edit_field_form_pp").dialog("open");
 	}
 
 	function clear_field_form( form ){
@@ -360,8 +360,8 @@ var wcscl_settings = (function($, window, document) {
 						var html  = '<tr>';
 						html += '<td style="width:150px;"><input type="text" name="i_options_key[]" value="'+this.key+'" placeholder="Option Value" style="width:140px;"/></td>';
 						html += '<td style="width:190px;"><input type="text" name="i_options_text[]" value="'+this.text+'" placeholder="Option Text" style="width:180px;"/></td>';
-						html += '<td class="action-cell"><a href="javascript:void(0)" onclick="wcsclAddNewOptionRow(this)" class="btn btn-blue" title="Add new option">+</a></td>';
-						html += '<td class="action-cell"><a href="javascript:void(0)" onclick="wcsclRemoveOptionRow(this)" class="btn btn-red" title="Remove option">x</a></td>';
+						html += '<td class="action-cell"><a href="javascript:void(0)" onclick="woocfclAddNewOptionRow(this)" class="btn btn-blue" title="Add new option">+</a></td>';
+						html += '<td class="action-cell"><a href="javascript:void(0)" onclick="woocfclRemoveOptionRow(this)" class="btn btn-red" title="Remove option">x</a></td>';
 						html += '<td class="action-cell sort ui-sortable-handle"></td>';
 						html += '</tr>';
 						
@@ -373,7 +373,7 @@ var wcscl_settings = (function($, window, document) {
 			}
 		}
 		
-		var optionsTable = form.find(".wcscl-option-list tbody");
+		var optionsTable = form.find(".woocfcl-option-list tbody");
 		if(optionsHtml){
 			optionsTable.html(optionsHtml);
 		}else{
@@ -406,49 +406,49 @@ var wcscl_settings = (function($, window, document) {
 	*------------------------------------*/
 	
 	function prepare_field_order_indexes() {
-		$('#wcscl_checkout_fields tbody tr').each(function(index, el){
-			$('input.f_order', el).val( parseInt( $(el).index('#wcscl_checkout_fields tbody tr') ) );
+		$('#woocfcl_checkout_fields tbody tr').each(function(index, el){
+			$('input.f_order', el).val( parseInt( $(el).index('#woocfcl_checkout_fields tbody tr') ) );
 		});
 	};
 	
 	function selectAllCheckoutFields(elm){
 		var checkAll = $(elm).prop('checked');
-		$('#wcscl_checkout_fields tbody input:checkbox[name=select_field]').prop('checked', checkAll);
+		$('#woocfcl_checkout_fields tbody input:checkbox[name=select_field]').prop('checked', checkAll);
 	}
 
 	function removeSelectedFields(){
-		$('#wcscl_checkout_fields tbody tr').removeClass('thpladmin-strikeout');
-		$('#wcscl_checkout_fields tbody input:checkbox[name=select_field]:checked').each(function () {
+		$('#woocfcl_checkout_fields tbody tr').removeClass('thpladmin-strikeout');
+		$('#woocfcl_checkout_fields tbody input:checkbox[name=select_field]:checked').each(function () {
 			var row = $(this).closest('tr');
 
-			if(!row.hasClass("thpladmin-strikeout")){
-				row.addClass("thpladmin-strikeout");
+			if(!row.hasClass("woocfcl-strikeout")){
+				row.addClass("woocfcl-strikeout");
 			}
 
 			row.find(".f_deleted").val(1);
 			row.find(".f_edit_btn").prop('disabled', true);
-	  	});	
+		});	
 	}
 
 	function enableDisableSelectedFields(enabled){
-		$('#wcscl_checkout_fields tbody input:checkbox[name=select_field]:checked').each(function () {
+		$('#woocfcl_checkout_fields tbody input:checkbox[name=select_field]:checked').each(function () {
 			var row = $(this).closest('tr');
 			row.find(".f_enabled").val(enabled);
 
 			if(enabled == 0){
-				if(!row.hasClass("thpladmin-disabled")){
-					row.addClass("thpladmin-disabled");
+				if(!row.hasClass("woocfcl-disabled")){
+					row.addClass("woocfcl-disabled");
 				}
 
 				row.find(".f_edit_btn").prop('disabled', true);
 				row.find(".td_enabled").html('-');
 			}else{
-				row.removeClass("thpladmin-disabled");	
+				row.removeClass("woocfcl-disabled");	
 
 				row.find(".f_edit_btn").prop('disabled', false);
 				row.find(".td_enabled").html('<span class="dashicons dashicons-yes"></span>');			
 			}
-	  	});	
+		});	
 	}
 	
 	return {
@@ -460,40 +460,40 @@ var wcscl_settings = (function($, window, document) {
 		fieldTypeChangeListner : fieldTypeChangeListner,
 		addNewOptionRow : add_new_option_row,
 		removeOptionRow : remove_option_row,
-   	};
+	};
 }(window.jQuery, window, document));	
 
-function wcsclOpenNewFieldForm(tabName){
-	wcscl_settings.openNewFieldForm(tabName);		
+function woocfclOpenNewFieldForm(tabName){
+	woocfcl_settings.openNewFieldForm(tabName);		
 }
 
-function wcsclOpenEditFieldForm(elm, rowId){
-	wcscl_settings.openEditFieldForm(elm, rowId);		
+function woocfclOpenEditFieldForm(elm, rowId){
+	woocfcl_settings.openEditFieldForm(elm, rowId);		
 }
 	
-function wcsclRemoveSelectedFields(){
-	wcscl_settings.removeSelectedFields();
+function woocfclRemoveSelectedFields(){
+	woocfcl_settings.removeSelectedFields();
 }
 
-function wcsclEnableSelectedFields(){
-	wcscl_settings.enableDisableSelectedFields(1);
+function woocfclEnableSelectedFields(){
+	woocfcl_settings.enableDisableSelectedFields(1);
 }
 
-function wcsclDisableSelectedFields(){
-	wcscl_settings.enableDisableSelectedFields(0);
+function woocfclDisableSelectedFields(){
+	woocfcl_settings.enableDisableSelectedFields(0);
 }
 
-function wcsclFieldTypeChangeListner(elm){	
-	wcscl_settings.fieldTypeChangeListner(elm);
+function woocfclFieldTypeChangeListner(elm){	
+	woocfcl_settings.fieldTypeChangeListner(elm);
 }
 	
-function wcsclSelectAllCheckoutFields(elm){
-	wcscl_settings.selectAllCheckoutFields(elm);
+function woocfclSelectAllCheckoutFields(elm){
+	woocfcl_settings.selectAllCheckoutFields(elm);
 }
 
-function wcsclAddNewOptionRow(elm){
-	wcscl_settings.addNewOptionRow(elm);
+function woocfclAddNewOptionRow(elm){
+	woocfcl_settings.addNewOptionRow(elm);
 }
-function wcsclRemoveOptionRow(elm){
-	wcscl_settings.removeOptionRow(elm);
+function woocfclRemoveOptionRow(elm){
+	woocfcl_settings.removeOptionRow(elm);
 }

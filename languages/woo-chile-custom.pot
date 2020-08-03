@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Chile customization for woocommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Chile customization for woocommerce 1.0.0\n"
+"Project-Id-Version: Woocommerce customization for Chile 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-chile-custom\n"
 "POT-Creation-Date: 2020-01-12 10:22:18+00:00\n"
 "MIME-Version: 1.0\n"
@@ -13,15 +13,15 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
 #. Plugin Name of the plugin/theme
-msgid "Chile customization for woocommerce"
+msgid "Woocommerce customization for Chile"
 msgstr ""
 
 #. Description of the plugin/theme
-msgid "Chile customization for WooCommerce and checkout fields Editor(Add, Edit, Delete and re-arrange fields)."
+msgid "Woocommerce customization for Chile and checkout fields Editor(Add, Edit, Delete and re-arrange fields)."
 msgstr ""
 
 #: classes/class-wcscl-checkout.php:30
-msgid "WooCommerce Checkout Form Designer"
+msgid "WooCommerce for Chile"
 msgstr ""
 
 #: classes/class-wcscl-checkout.php:30

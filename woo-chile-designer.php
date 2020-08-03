@@ -17,26 +17,34 @@
 defined( 'ABSPATH' ) || exit;
 
 !defined('WOOCFCL_PATH') && define('WOOCFCL_PATH', plugin_dir_path( __FILE__ ));
-!defined('WOOCFCL_BASE_NAME') && define('WOOCFCL_BASE_NAME', dirname(plugin_basename( __FILE__ )));
-!defined('WOOCFCL_PREFIX') && define('WOOCFCL_PREFIX', 'woocfcl');
-
 include_once WOOCFCL_PATH . 'classes/class-woocfcl-utils.php';
 
+//print_r(WOOCFCL_Utils::is_woocommerce_active());
 
 if(WOOCFCL_Utils::is_woocommerce_active()):
-
-	// Include the main WooCommerce customization for chile class.
+	
+	WOOCFCL_Utils::define('WOOCFCL_BASE_NAME', dirname(plugin_basename( __FILE__ )));
+	WOOCFCL_Utils::define('WOOCFCL_URL', plugin_dir_url( __FILE__ ));
+	WOOCFCL_Utils::define('WOOCFCL_PREFIX','woocfcl');
 	include_once WOOCFCL_PATH . 'classes/class-woocfcl.php';
+	// Include the main WooCommerce customization for chile class.
+
 	/**
 	 * Returns the main instance of WC customization for chile.
 	 *
 	 * @since  2.1
-	 * @return WC customization for chile
+	 * @return WOOCFCL customization for chile
 	 */
 	function WOOCFCL() { 
-			return WOOCFCL::instance();
+		// return WOOCFCL::instance();
+		if(!isset($GLOBALS[WOOCFCL_PREFIX])) {
+			// put it in the global scope
+			$GLOBALS[WOOCFCL_PREFIX] = new WOOCFCL();
+		}
+
+		return $GLOBALS[WOOCFCL_PREFIX];
 	}
          // Global for backwards compatibility.
-	$GLOBALS[WOOCFCL_PREFIX] = WOOCFCL();
+	WOOCFCL();
 
 endif;

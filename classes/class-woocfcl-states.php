@@ -9,21 +9,6 @@ if(!class_exists('WOOCFCL_States')):
  */
 class WOOCFCL_States extends WOOCFCL_Options
 {
-    
-    private static $_instance = null;
-    /**
-     * The name used by option.
-     *
-     * @var string
-     */
-    private $_option = 'states'; 
-    /**
-	 * default states
-	 *
-	 * @var array
-	 */
-    public $defaults = array();
-    
 
     /**
 	 * default states from woocommerce and the plugin
@@ -31,24 +16,19 @@ class WOOCFCL_States extends WOOCFCL_Options
 	 * @var array
 	 */
     public $states_defaultExtend = array();
-
     /**
 	 * current states from plugin and woocommerce
 	 *
 	 * @var array
 	 */
     public $states_Extend = array();
-
-
     /**
 	 * current states from plugin and woocommerce for woocommerce
 	 *
 	 * @var array
 	 */
     public $states_Woocom = array();
-    
-
-    private $_appOpt;
+    // private $_appOpt;
     /**
      * Constructor.
      *
@@ -56,44 +36,40 @@ class WOOCFCL_States extends WOOCFCL_Options
      */
     public function __construct($option=null,$prefix = null)
     {
+        $this->_option= 'states'; 
+        $this->defaults = array();
         $option = !isset($option)? $this->_option:$option;
+        //$option = !isset($option)? $this->_option:$option;
         parent::__construct($option,$prefix);
-
+        $this->init();
     }  
 
     public static function instance($option=null,$prefix = null) {
         if (is_null(self::$_instance)) {
-        self::$_instance = new self($option,$prefix);
+            self::$_instance = new self($option,$prefix);
         }
         return self::$_instance;
     }
 
-    public function init($appOpt){
-
-        $this->_appOpt = $appOpt;          
+    public function init(){
 
         $this->get_defaultExtend_states();
         $this->get_AppExtend_states();
         $this->set_Woocom_states();
 
-
     }
 
     public function get_defaultExtend_states($states=array()){
-        $this->states_defaultExtend=WOOCFCL_Utils::array_empty($states) ? $this->states_defaultExtend:$states;
-        
-        if (!WOOCFCL_Utils::array_empty($this->_appOpt->countriesAllowedWoocom) ) {
-    
-            foreach ($this->_appOpt->countriesAllowedWoocom as $code => $country) {
+        $this->states_defaultExtend=WOOCFCL_Utils::array_empty($states) ? $this->defaults:array_merge($states, $this->defaults);
+        if (!WOOCFCL_Utils::array_empty(WOOCFCL()->countries) ) {
+            $stateswoo=WOOCFCL()->woocom_get_States();
+            foreach (WOOCFCL()->countries as $code => $country) {
+                $this->states_defaultExtend[$code] =isset($stateswoo[$code])? $stateswoo[$code]:array();
                 //check if exist file code
-
                 $statepath=WOOCFCL_PATH_STATES . $code . '.php';
                 if (file_exists($statepath)) {
                     $statestemp = include($statepath);
-                    $this->states_defaultExtend[$code]= WOOCFCL_Utils::array_empty($statestemp)? $this->get_woocom_States($code):$statestemp[$code];
-                }
-                else {
-                    $this->states_defaultExtend[$code] =$this->get_woocom_States($code);
+                    $this->states_defaultExtend[$code]= WOOCFCL_Utils::array_empty($statestemp)? $this->states_defaultExtend[$code]:$statestemp[$code];
                 }
             }
         }
@@ -107,23 +83,19 @@ class WOOCFCL_States extends WOOCFCL_Options
     public function get_AppExtend_states($states=array()){
         
         $this->states_Extend=WOOCFCL_Utils::array_empty($states)?$this->defaults:array_merge($states,$this->defaults);
-    
-        if ($this->_countriesChange) {
-
-            if ($this->_appOpt->onlyWoocommCountry &&  !WOOCFCL_Utils::array_empty($this->_appOpt->countriesToDelete)) {
-                foreach ($this->_appOpt->countriesToDelete as $code => $country) {
+        if (WOOCFCL()->app->countriesChange) {
+            if (WOOCFCL()->app->onlyWoocommCountry &&  !WOOCFCL_Utils::array_empty(WOOCFCL()->app->countriesToDelete)) {
+                foreach (WOOCFCL()->app->countriesToDelete as $code => $country) {
                     //check if exist file code
                     unset($this->states_Extend[$code]);   
                 }
             }
-
-            if (!WOOCFCL_Utils::array_empty($this->_appOpt->countriesToAdd )) {
-                foreach ($this->_appOpt->countriesToAdd as $code => $country) {
+            if (!WOOCFCL_Utils::array_empty(WOOCFCL()->app->countriesToAdd )) {
+                foreach (WOOCFCL()->app->countriesToAdd as $code => $country) {
                     //check if exist file code
                     $this->states_Extend[$code]=$this->states_defaultExtend[$code];   
                 }
             }
-
             if (!WOOCFCL_Utils::array_empty($this->states_Extend) ) {
                 $this->defaults=$this->states_Extend;
                 $this->setDefault();
@@ -135,9 +107,8 @@ class WOOCFCL_States extends WOOCFCL_Options
     public function set_Woocom_states($states=array())
     {   
         $this->states_Woocom=WOOCFCL_Utils::array_empty($states) ? $this->states_Extend : array_merge($states,$this->states_Extend);
-        
-        if (!WOOCFCL_Utils::array_empty($this->_appOpt->countriesExtend)) {
-            foreach ($this->_appOpt->countriesExtend as $code => $country) {
+        if (!WOOCFCL_Utils::array_empty(WOOCFCL()->app->countriesExtend)) {
+            foreach (WOOCFCL()->app->countriesExtend as $code => $country) {
                 // 
                 if (!WOOCFCL_Utils::array_empty($this->states_Woocom[$country])) {
                     $res = array($country=>array());
@@ -151,14 +122,10 @@ class WOOCFCL_States extends WOOCFCL_Options
         return $this->states_Woocom;
     } 
 
-    /***********************************
-    ---- WOOCOMMERCE functions - START ---
-    *****************************woo_get_country_states******/
-    public function get_woocom_States($country)
-    {
-        $statestemp = WC()->countries->get_states($country );
-        return WOOCFCL_Utils::array_empty($statestemp)? array():$statestemp;
-    }   
+    public function get_woocommmerce_state() {
+        return $this->states_Woocom;
+    }
+
 
 }
 endif;    

@@ -46,7 +46,7 @@ class WOOCFCL_Cities extends WOOCFCL_Options
 	 */
     public $cities_Woocom = array();
 
-    private $_appOpt;    
+    
     /**
      * Constructor.
      *
@@ -56,7 +56,7 @@ class WOOCFCL_Cities extends WOOCFCL_Options
     {
         $option = !isset($option)? $this->_option:$option;
         parent::__construct($option,$prefix);
-
+        $this->init();
     }  
 
     public static function instance($option=null,$prefix = null) {
@@ -66,10 +66,8 @@ class WOOCFCL_Cities extends WOOCFCL_Options
         return self::$_instance;
     }
 
-    public function init($appOpt){
+    public function init(){
 
-        $this->_appOpt = $appOpt; 
-        
         $this->get_defaultExtend_cities();
         $this->get_AppExtend_cities();
         $this->set_Woocom_cities();
@@ -80,9 +78,9 @@ class WOOCFCL_Cities extends WOOCFCL_Options
     public function get_defaultExtend_cities($cities=array()){
         $this->cities_defaultExtend==WOOCFCL_Utils::array_empty($cities) ? $this->cities_defaultExtend : $cities;
         
-        if (!WOOCFCL_Utils::array_empty($this->_appOpt->countriesAllowedWoocom) ) {
+        if (!WOOCFCL_Utils::array_empty(WOOCFCL()->countries) ) {
     
-            foreach ($this->_appOpt->countriesAllowedWoocom as $code => $country) {
+            foreach (WOOCFCL()->countries as $code => $country) {
                 //check if exist file code
 
                 $citiespath=WOOCFCL_PATH_CITIES . $code . '.php';
@@ -106,17 +104,17 @@ class WOOCFCL_Cities extends WOOCFCL_Options
 
         $this->cities_Extend=WOOCFCL_Utils::array_empty($cities)? $this->defaults : array_merge($cities,$this->defaults);
         
-        if ($this->_appOpt->countriesChange) {
+        if (WOOCFCL()->app->countriesChange) {
 
-            if ($this->_appOpt->onlyWoocommCountry &&  !WOOCFCL_Utils::array_empty($this->_appOpt->countriesToDelete)) {
-                foreach ($this->_appOpt->countriesToDelete as $code => $country) {
+            if (WOOCFCL()->app->onlyWoocommCountry &&  !WOOCFCL_Utils::array_empty(WOOCFCL()->app->countriesToDelete)) {
+                foreach (WOOCFCL()->app->countriesToDelete as $code => $country) {
                     //check if exist file code
                     unset($this->cities_Extend[$code]);   
                 }
             }
 
-            if (!WOOCFCL_Utils::array_empty($this->_appOpt->countriesToAdd )) {
-                foreach ($this->_appOpt->countriesToAdd as $code => $country) {
+            if (!WOOCFCL_Utils::array_empty(WOOCFCL()->app->countriesToAdd )) {
+                foreach (WOOCFCL()->app->countriesToAdd as $code => $country) {
                     //check if exist file code
                     $this->cities_Extend[$code]=$this->cities_defaultExtend[$code];   
                 }
@@ -134,9 +132,9 @@ class WOOCFCL_Cities extends WOOCFCL_Options
     {   
         $this->cities_Woocom=WOOCFCL_Utils::array_empty($cities)? $this->cities_Extend : array_merge($cities,$this->cities_Extend);
     
-        if (!WOOCFCL_Utils::array_empty($this->_appOpt->countriesExtend)) {
+        if (!WOOCFCL_Utils::array_empty(WOOCFCL()->app->countriesExtend)) {
             
-            foreach ($this->_appOpt->countriesExtend as $code => $country) {
+            foreach (WOOCFCL()->app->countriesExtend as $code => $country) {
                 // 
                 if (!WOOCFCL_Utils::array_empty($this->cities_Woocom[$country])) {
                     $res = array($country=>array());

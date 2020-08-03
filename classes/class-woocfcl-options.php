@@ -54,9 +54,11 @@ class WOOCFCL_Options
      */
     public function __construct($option=null,$prefix = null)
     {
+        
         $this->_prefix = !isset($prefix)? WOOCFCL_PREFIX:$prefix;
         $this->_option = !isset($option)? $this->_option:$option;
         $this->_table = $this->get_option_name($this->_option);
+
         $this->_ismultisite =  is_multisite() && defined( 'WP_ALLOW_MULTISITE' ) && WP_ALLOW_MULTISITE;
         $this->getListDefault();
 
@@ -79,6 +81,9 @@ class WOOCFCL_Options
         }
         return self::$_instance;
     }
+
+
+    
     /**
      * Returns the default prefix.
      *
@@ -149,11 +154,13 @@ class WOOCFCL_Options
      */
     public function get($name='',$value = null)
     {
+        // echo ' <br/>$option: '.$name.'<br/> ';
         $name=$this->get_option_name($name);
+        // echo ' <br/>$option: '.$name.'<br/> ';
         if ( empty( $name ))  return false; 
 
         $option =$this->_ismultisite? get_site_option($name):get_option($name);
-        //echo ' <br/>$option: '.$name.'<br/> '.var_export($option ,TRUE).'<br/> '.var_export(empty( $option ) ,TRUE).'<br/> '.var_export($value  ,TRUE);
+        // echo ' <br/>$option: '.$name.'<br/> '.var_export($option ,TRUE).'<br/> '.var_export(empty( $option ) ,TRUE).'<br/> '.var_export($value  ,TRUE);
 
         if (empty( $option ) ) {
 
@@ -194,7 +201,8 @@ class WOOCFCL_Options
      */
     public function getListDefault()
     {
-        $this->defaults =(array) $this->getList($this->_table,$this->defaults);
+        $result=$this->getList($this->_table,$this->defaults);
+        $this->defaults = empty($result)?array(): (array)$result  ;
         return $this->defaults;
     }
 
@@ -211,6 +219,18 @@ class WOOCFCL_Options
         $name=$this->get_option_name($name='');
         if ( empty( $name ))  return false; 
         return $this->_ismultisite? delete_option($name):delete_site_option($name);
+    }
+
+    /**
+     * Removes the default option with the given name existing option.
+     *
+     * 
+     *
+     * @return bool
+     */
+    public function removeDefault()
+    {
+        return $this->remove($this->_table);
     }
 
     /**
@@ -267,9 +287,10 @@ class WOOCFCL_Options
         // foreach ($this as $property_name => $property_values) {
         //     echo '<br/>'.$property_name.': '.var_export($property_values ,TRUE);
         // }
-        echo '<br/><br/>'.$this->_table .'<pre>';
-        print_r((array) $this);
-        echo '</pre>';
+        // echo '<br/><br/>'.$this->_table .'<pre>';
+        // print_r((array) $this);
+        // echo '</pre>';
+        WOOCFCL_Utils::printToArray($this->_table,$this);
     }
 }
 

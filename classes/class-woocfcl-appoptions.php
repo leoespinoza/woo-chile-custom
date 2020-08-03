@@ -55,12 +55,6 @@ class WOOCFCL_AppOptions extends WOOCFCL_Options
 	 */
     public $countriesAllowed= array();
     /**
-	 * countries allowed by woocommerce
-	 *
-	 * @var array
-	 */
-    public $countriesAllowedWoocom= array();
-    /**
 	 * determine if the allowed countries have changed 
 	 * between woocommerce and the plugin
      * 
@@ -77,6 +71,9 @@ class WOOCFCL_AppOptions extends WOOCFCL_Options
     public $countriesToAdd= array();
     public $countriesToDelete= array();
     public $countriesToKeep= array();
+
+
+    
     /**
      * Constructor.
      *
@@ -103,16 +100,16 @@ class WOOCFCL_AppOptions extends WOOCFCL_Options
     }
 
     private function setAllowedCountries(){
-        $this->countriesAllowedWoocom=WOOCFCL_Utils::woo_get_allowed_countries();
+        $countriesAllowedWoocom=WOOCFCL()->countries;
 
         if(WOOCFCL_Utils::array_empty($this->countriesAllowed)){
             $this->countriesChange=true;
         }
         else {
-            $this->countriesChange= WOOCFCL_Utils::array_equal($this->countriesAllowed,$this->countriesAllowedWoocom)?false:true;
+            $this->countriesChange= WOOCFCL_Utils::array_equal($this->countriesAllowed,$countriesAllowedWoocom)?false:true;
         }
-        if(!WOOCFCL_Utils::array_empty($this->countriesAllowedWoocom)){
-            foreach ($this->countriesAllowedWoocom as $code => $country) {
+        if(!WOOCFCL_Utils::array_empty($countriesAllowedWoocom)){
+            foreach ($countriesAllowedWoocom as $code => $country) {
                 //check if exist file code
                 $statepath=WOOCFCL_PATH_STATES . $code . '.php';
                 if (file_exists($statepath) && !in_array ( $code, $this->countriesExtend )) {
@@ -125,15 +122,15 @@ class WOOCFCL_AppOptions extends WOOCFCL_Options
 
         if ($this->countriesChange) {
 
-            $this->countriesToAdd = array_diff_key($this->countriesAllowedWoocom, $this->countriesAllowed);
-            $this->countriesToDelete = array_diff_key($this->countriesAllowed, $this->countriesAllowedWoocom);
-            $this->countriesToKeep = array_diff_key($this->countriesAllowedWoocom,$this->countriesToAdd , $this->countriesToDelete);
+            $this->countriesToAdd = array_diff_key($countriesAllowedWoocom, $this->countriesAllowed);
+            $this->countriesToDelete = array_diff_key($this->countriesAllowed, $countriesAllowedWoocom);
+            $this->countriesToKeep = array_diff_key($countriesAllowedWoocom,$this->countriesToAdd , $this->countriesToDelete);
 
-            $this->defaults['countriesAllowed']=$this->countriesAllowedWoocom;
+            $this->defaults['countriesAllowed']=$countriesAllowedWoocom;
             $this->defaults['countriesExtend']=$this->countriesExtend;
             $this->setDefault();
         }
-        return $this->countriesAllowedWoocom;
+        return $countriesAllowedWoocom;
     }
 }
 endif;    
