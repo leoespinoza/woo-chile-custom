@@ -11,6 +11,7 @@ class WOOCFCL_WPAdditional
     {
         use WOOCFCL_WPOptions, WOOCFCL_WoocomFields {
             WOOCFCL_WPOptions::__construct as private __vpoConstruct;
+            WOOCFCL_WPOptions::set_field_property_to_form insteadof WOOCFCL_WoocomFields;
         }
         /**
          * Constructor.
@@ -44,9 +45,9 @@ class WOOCFCL_WPAdditional
 	 */
 	public function enable_order_notes_field() {
 
-		if(!WOOCFCL_Utils::array_empty( $this->fieldsPlugin)){
+		if(!WOOCFCL_Utils::array_empty( $this->option_value)){
 			$enabled = 0;
-			foreach( $this->fieldsPlugin as $field){
+			foreach( $this->option_value as $field){
 				if($field['enabled']){
 					$enabled++;
 				}

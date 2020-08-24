@@ -142,6 +142,7 @@ class WOOCFCL {
 		WOOCFCL_Utils::define('WOOCFCL_SCREENID_I18', strtolower(WOOCFCL_Utils::t('WooCommerce')) .'_page_'.WOOCFCL_ACTION_LINK);			
 		WOOCFCL_Utils::define('WOOCFCL_PATH_CLASS', WOOCFCL_PATH .'classes/');
 		WOOCFCL_Utils::define('WOOCFCL_PATH_VIEW_BACKEND', WOOCFCL_PATH .'view/backend/');
+		WOOCFCL_Utils::define('WOOCFCL_PATH_COUNTRIES', WOOCFCL_PATH .'i18n/countries/');
 		WOOCFCL_Utils::define('WOOCFCL_PATH_STATES', WOOCFCL_PATH .'i18n/states/');
 		WOOCFCL_Utils::define('WOOCFCL_PATH_CITIES', WOOCFCL_PATH .'i18n/cities/');
 		WOOCFCL_Utils::define('WOOCFCL_ASSETS_URL', WOOCFCL_URL .'assets/');
@@ -211,8 +212,9 @@ class WOOCFCL {
 	 * Load text domain for internationalitation         
 	 */
 	public function load_textdomain(){
-		$this->langlocale = $this->wp_get_lang_locale();
-		$mofile= WP_LANG_DIR.'/'.WOOCFCL_BASE_NAME.'/'.WOOCFCL_TEXT_DOMAIN.'-'.$this->langlocale.'.mo';
+
+		$this->langlocale =$this->wp_get_lang_locale();
+		$mofile= WP_LANG_DIR.'/'.WOOCFCL_BASE_NAME.'/'.WOOCFCL_TEXT_DOMAIN.'-'.$this->langlocale['lang'].'.mo';
 		$plugin_rel_path=WOOCFCL_BASE_NAME . '/languages/';
 		load_textdomain(WOOCFCL_TEXT_DOMAIN,$mofile);
 		load_plugin_textdomain(WOOCFCL_TEXT_DOMAIN, false, $plugin_rel_path);
@@ -258,6 +260,11 @@ class WOOCFCL {
 		return $fields;
 	}
 
+	public function get_option_datatable($nameobject) {
+
+		return isset($this->{$nameobject}) ?$this->{$nameobject}->option_datatable:false;
+	}
+
 	public function reset_checkout_field() {
 
 		return (
@@ -282,7 +289,7 @@ class WOOCFCL {
 
 	public function get_checkout_fields($name) {
 
-		$currentFields=(isset($this->{$name}))?$this->{$name}->fieldsPlugin:array();
+		$currentFields=(isset($this->{$name}))?(isset($this->{$name}->fieldsPlugin)?$this->{$name}->fieldsPlugin:$this->{$name}->option_value):array();
 		return $currentFields;
 	}
 
@@ -310,7 +317,9 @@ class WOOCFCL {
 
 
     private function wp_get_lang_locale() {
-        return apply_filters('plugin_locale', get_locale(), WOOCFCL_TEXT_DOMAIN);
+        $lng= apply_filters('plugin_locale', get_locale(), WOOCFCL_TEXT_DOMAIN);
+		
+		return array('lang'=> $lng,'shortlang'=>substr ($lng , 0, 2) );
     }
     
     public static function woocom_version_check( $version = '3.0' ) {

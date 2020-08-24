@@ -282,6 +282,10 @@ trait WOOCFCL_WPOptions
 
         WOOCFCL_Utils::printToArray($this->_optionName,$this);
     }
+
+    public function  set_field_property_to_form() {
+        return $this->option_datatable;
+    }
 }
 
 

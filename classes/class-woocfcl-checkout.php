@@ -19,8 +19,10 @@ class WOOCFCL_Checkout {
 		
 	}
 	public function init_action() {
+		
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_styles_and_scripts'));
 		add_action('after_setup_theme', array($this, 'register_public_hooks'));
+	
 	}
 
 	public function enqueue_styles_and_scripts() {
@@ -35,37 +37,38 @@ class WOOCFCL_Checkout {
 	}
 
 	public function register_public_hooks(){
-		echo 'register_public_hooks <br/>';
-		$woocfcl_checkout_priority=10;//99999;
-		$woocfcl_fields_priority=1000;
-		$woocfcl_priority=10;
-		// $hp_default_address_fields = apply_filters('woocfcl_default_address_fields_priority', 1000);
-		// $hp_billing_fields  = apply_filters('woocfcl_billing_fields_priority', 1000);
-		// $hp_shipping_fields = apply_filters('woocfcl_shipping_fields_priority', 1000);
-		// $hp_checkout_fields = apply_filters('woocfcl_checkout_fields_priority', 1000);
+		if(is_checkout()){
+		//echo 'register_public_hooks <br/>';
+			$woocfcl_checkout_priority=10;//99999;
+			$woocfcl_fields_priority=1000;
+			$woocfcl_priority=10;
+			// $hp_default_address_fields = apply_filters('woocfcl_default_address_fields_priority', 1000);
+			// $hp_billing_fields  = apply_filters('woocfcl_billing_fields_priority', 1000);
+			// $hp_shipping_fields = apply_filters('woocfcl_shipping_fields_priority', 1000);
+			// $hp_checkout_fields = apply_filters('woocfcl_checkout_fields_priority', 1000);
 
 
-		add_filter('woocommerce_billing_fields', array($this, 'billing_fields'), $woocfcl_checkout_priority, 2);
-		add_filter('woocommerce_shipping_fields', array($this, 'shipping_fields'), $woocfcl_checkout_priority, 2);
-		add_filter('woocommerce_checkout_fields', array($this, 'checkout_fields'), $woocfcl_checkout_priority);
+			add_filter('woocommerce_billing_fields', array($this, 'billing_fields'), $woocfcl_checkout_priority, 2);
+			add_filter('woocommerce_shipping_fields', array($this, 'shipping_fields'), $woocfcl_checkout_priority, 2);
+			add_filter('woocommerce_checkout_fields', array($this, 'checkout_fields'), $woocfcl_checkout_priority);
 
-		add_filter('woocommerce_get_country_locale_default', array($this, 'prepare_country_locale'),$woocfcl_priority);
-		add_filter('woocommerce_get_country_locale_base', array($this, 'prepare_country_locale'),$woocfcl_priority);
-		add_filter('woocommerce_get_country_locale', array($this, 'get_country_locale'),$woocfcl_priority);
+			add_filter('woocommerce_get_country_locale_default', array($this, 'prepare_country_locale'),$woocfcl_priority);
+			add_filter('woocommerce_get_country_locale_base', array($this, 'prepare_country_locale'),$woocfcl_priority);
+			add_filter('woocommerce_get_country_locale', array($this, 'get_country_locale'),$woocfcl_priority);
 
-		add_filter('woocommerce_enable_order_notes_field', array($this, 'enable_order_notes_field'), 1000);
-		add_action('woocommerce_checkout_update_order_meta', array($this, 'checkout_update_order_meta'), $woocfcl_priority, 2);
+			add_filter('woocommerce_enable_order_notes_field', array($this, 'enable_order_notes_field'), 1000);
+			add_action('woocommerce_checkout_update_order_meta', array($this, 'checkout_update_order_meta'), $woocfcl_priority, 2);
 
-		add_action('woocommerce_order_details_after_order_table', array($this, 'order_details_after_customer_details'), 20, 1);
+			add_action('woocommerce_order_details_after_order_table', array($this, 'order_details_after_customer_details'), 20, 1);
 
-		add_filter('woocommerce_default_address_fields' , array($this, 'default_address_fields'), $woocfcl_fields_priority);
-		add_action('woocommerce_after_checkout_validation', array($this, 'checkout_fields_validation'), $woocfcl_priority, 2);
-		add_filter('woocommerce_email_order_meta_fields', array($this, 'display_custom_fields_in_emails'), $woocfcl_priority, 3);
-
+			add_filter('woocommerce_default_address_fields' , array($this, 'default_address_fields'), $woocfcl_fields_priority);
+			add_action('woocommerce_after_checkout_validation', array($this, 'checkout_fields_validation'), $woocfcl_priority, 2);
+			add_filter('woocommerce_email_order_meta_fields', array($this, 'display_custom_fields_in_emails'), $woocfcl_priority, 3);
+		}
 	}
 
 	public function billing_fields($fields, $country){
-				echo 'billing_fields <br/>';
+				// echo 'billing_fields <br/>';
 		$wc_endpoints = WC()->query->get_query_vars();
 		WOOCFCL_Utils::setSession('billing_fields',$wc_endpoints);
 		return (is_wc_endpoint_url('edit-address'))?$fields:$this->prepare_address_fields(WOOCFCL()->get_checkout_fields('billing'), $fields, 'billing', $country);

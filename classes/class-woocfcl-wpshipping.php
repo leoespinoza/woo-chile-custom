@@ -12,6 +12,7 @@ class WOOCFCL_WPShipping
     
         use WOOCFCL_WPOptions, WOOCFCL_WoocomFields {
             WOOCFCL_WPOptions::__construct as private __vpoConstruct;
+            WOOCFCL_WPOptions::set_field_property_to_form insteadof WOOCFCL_WoocomFields;
         }
         /**
          * Constructor.
