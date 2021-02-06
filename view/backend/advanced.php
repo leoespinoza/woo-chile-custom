@@ -13,15 +13,15 @@
 			// print_r(WOOCFCL()->billing->fieldsPlugin);
 			// WOOCFCL()->app->print_to_array();
 			// //WOOCFCL()->wpapp->printToArray();
-			// //WOOCFCL()->wpstates->print_to_array();
 			// WOOCFCL()->states->print_to_array();
+			// WOOCFCL()->cities->print_to_array();
 			// WOOCFCL()->wpadditional->print_to_array();
 			
         //    WOOCFCL()->form->printToArray();
 				// WOOCFCL()->shipping->printToArray();
 	?>
 </div>           
-<!-- <div class="wrap woocommerce"><div class="icon32 icon32-attributes" id="icon-woocommerce"><br /></div>
+<!-- <div class="wrapwoocommerce"><div class="icon32 icon32-attributes" id="icon-woocommerce"><br /></div>
 <br class="clear" /> -->
 <?php 
 	echo $this->currentMessage; 

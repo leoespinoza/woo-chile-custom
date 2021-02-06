@@ -1,8 +1,9 @@
 
-  
         <!-- Page Content goes here -->
         <div class="row">
-
+			<form method="post" id="woocfcl-form-field-options" action="">
+				<input type="hidden" name="fieldsAction" value="none">
+			</form>
 			<!-- <div class="input-field col s4">
 				<select id="countries-dropdown" name="countries"></select>
 				<label>Materialize Select</label>
@@ -39,18 +40,10 @@
 			</div>
         </div>
 
-        <div id="modal1" class="modal">
-            <div class="modal-content">
-                <h4>Modal Header</h4>
-                <p>A bunch of text</p>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-            </div>
-        </div>
-        <!-- Page Content goes here -->
+
+        <!-- Page Edit Content goes here -->
         <div id="EditFieldModal" class="modal">
-            <form id="form-state-edit" action="">
+            <form id="woocfcl-form-row-edit" action="">
                 <div class="modal-header">
                     <div class="left  pdg1-l"><h5>Edit Record</h5> </div>
                     <div class="right mrg1-t">
@@ -61,8 +54,8 @@
                 </div>
                 <div class="modal-content">
                     <div class="modal-body">
-						<input type="hidden" name="RowId" >
-                        <input type="hidden" name="RowOrder" >
+						<input type="hidden" name="rowId" >
+                        <input type="hidden" name="rowOrder" >
 						<div class="row">
 							<div class="form-group col s4">
 								<label>Code:</label>
@@ -101,12 +94,10 @@
                 
                 </div>
                 <div class="modal-footer">
-                    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-                    <button class="btn">Próximo</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary modal-close waves-effect waves-green btn-flat">Close</button>
+
+                    <button type="button" class="btn waves-effect waves-light modal-close">Close</button>
                     <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
+                        <i class="material-icons left">send</i>
                     </button>
                 </div>
             </form>

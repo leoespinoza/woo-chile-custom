@@ -27,17 +27,21 @@ var commHelper = {
   isJSON: function isJSON(o) {
     return Object.prototype.toString.call(o) === '[object Object]';
   },
-  // jquery required
-  isArray: function isArray(o) {
-    return $.isArray(o);
+  isArray: function isArray(obj) {
+    if (typeof Array.isArray === 'undefined') {
+      Array.isArray = function (obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+      };
+    }
+
+    ;
   },
   isEmpty: function isEmpty(o) {
     return typeof o === 'undefined' || o === null || o === '';
   },
   isEmptyArray: function isEmptyArray(o) {
-    var $isArray = this.isArray(o);
-    if ($isArray === true) return o.length === 0;
-    return $isArray;
+    if (this.isArray(o) === true) return o.length === 0;
+    return false;
   },
   isEmptyLookup: function isEmptyLookup(o) {
     return o === -1 || o === 0 || o === '-1' || o === '0' || this.isEmpty(o);
@@ -55,12 +59,16 @@ var commHelper = {
     var str = this.getString(o);
     return !(str.length < minlength || str.length > maxlength);
   },
+  getValue: function getValue(o) {
+    var defaultvalue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    return this.isEmpty(o) ? defaultvalue : o;
+  },
   getString: function getString(o, defaultvalue) {
     defaultvalue = this.isEmpty(defaultvalue) ? '' : defaultvalue;
     return this.isEmpty(o) ? defaultvalue : o;
   },
   getBool: function getBool(o) {
-    return this.isEmpty(o) ? false : !!(o === 'on' || o === 'true' || o === true);
+    return this.isEmpty(o) ? false : !!(o === 'on' || o === 'true' || o === true || Number(o) === 1);
   },
   getDate: function getDate(o) {
     var $o = this.isEmpty(o) ? null : o;
@@ -196,6 +204,46 @@ var commHelper = {
       async: false
     }).responseText;
     return JSON.parse(d);
+  },
+  replaceStringFromArray: function replaceStringFromArray() {
+    var s = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    var o = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    var i = 0;
+    o.forEach(function (item) {
+      s = s.replace("{".concat(i, "}"), item);
+      i += 1;
+    });
+    return s;
+  },
+  isHtmlIdValid: function isHtmlIdValid(id) {
+    var re = /^[a-z\_]+[a-z0-9\_]*$/;
+    return re.test(id.trim());
+  },
+  decodeHtml: function decodeHtml(str) {
+    if (jQuery.type(str) === 'string') {
+      var map = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#039;': "'"
+      };
+      return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function (m) {
+        return map[m];
+      });
+    }
+
+    return str;
+  },
+  transformJsonToArray: function transformJsonToArray(jso) {
+    var o = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    if (this.isEmptyArray(o)) return [];
+    if (this.isEmpty(jso)) return [];
+    var r = [];
+    o.forEach(function (item) {
+      r.push(jso[item]);
+    });
+    return r;
   }
 };
 
@@ -204,13 +252,15 @@ var woocfcl_settings = function ($, window, document, undefined) {
   var states = typeof woocfcl_states !== 'undefined' ? woocfcl_states : null;
   var options = typeof woocfcl_options !== 'undefined' ? woocfcl_options : null;
   var config = typeof woocfcl_config !== 'undefined' ? woocfcl_config : null;
-  var currentRowId = 0;
   var currentLang = config.lang.shortlang;
   var jsonTranslate = commHelper.getjsonfromUrl("/wp-content/plugins/woo-chile-custom/assets/admin/js/i18n/".concat(currentLang, ".json")); // dom object;
 
   var container = $('.container');
   var loader = $('#loader');
-  var modal = $('#EditFieldModal').modal();
+  var $modalRowEdit = $('#EditFieldModal').modal();
+  var $formRowEdit = $('#woocfcl-form-row-edit');
+  var $formFields = $('#woocfcl-form-field-options');
+  var $action_changes = [];
   var table;
   var select_pagination;
   var select_country;
@@ -223,7 +273,10 @@ var woocfcl_settings = function ($, window, document, undefined) {
   OPTION_ROW_HTML += '<td class="action-cell sort ui-sortable-handle"></td>';
   OPTION_ROW_HTML += '</tr>';
   var contextState = {
+    tableId: '#options-datatable',
     toolbar: '<div class="input-field col s4"><select id="countries-dropdown" name="countries"></select><label>{0}</label></div>',
+    toolbarNames: ['country'],
+    columnNames: ['RowOrder', 'CheckboxSelect', 'ID', 'country', 'Name', 'AdditionalCode', 'NumberCode', 'enabled', 'Button'],
     datatable: {
       dom: '<"toolbar"> lfrtip',
       data: options,
@@ -234,8 +287,8 @@ var woocfcl_settings = function ($, window, document, undefined) {
       columns: [{
         data: 'RowOrder',
         className: 'reorder',
-        render: function render(data, type, full, meta) {
-          return dataTableHelper.appendsHideData(data, type, full, meta);
+        render: function render(data, type, row, meta) {
+          return dataTableHelper.appendsHideData(data, type, row, meta, contextState.columnNames);
         }
       }, {
         targets: 1,
@@ -245,8 +298,8 @@ var woocfcl_settings = function ($, window, document, undefined) {
         checkboxes: {
           selectRow: true
         },
-        render: function render(data, type, full, meta) {
-          return dataTableHelper.appendsCheckboxselection(data, type, full, meta);
+        render: function render(data, type, row, meta) {
+          return dataTableHelper.appendsCheckboxselection(data, type, row, meta, contextState.columnNames);
         }
       }, {
         data: 'ID'
@@ -261,8 +314,8 @@ var woocfcl_settings = function ($, window, document, undefined) {
         data: 'NumberCode'
       }, {
         data: 'enabled',
-        render: function render(data, type, full, meta) {
-          return dataTableHelper.appendswitch(data, type, full, meta);
+        render: function render(data, type, row, meta) {
+          return dataTableHelper.appendswitch(data, type, row, meta, contextState.columnNames);
         }
       }, {
         data: null,
@@ -271,8 +324,8 @@ var woocfcl_settings = function ($, window, document, undefined) {
         searchable: false,
         orderable: false,
         className: 'text-center',
-        render: function render(data, type, full, meta) {
-          return dataTableHelper.appendsButtonEdit(data, type, full, meta);
+        render: function render(data, type, row, meta) {
+          return dataTableHelper.appendsButtonEdit(data, type, row, meta, contextState.columnNames);
         }
       }],
       columnDefs: [{
@@ -292,12 +345,13 @@ var woocfcl_settings = function ($, window, document, undefined) {
         /* UP */
         , 40]
       },
-      initComplete: function initComplete() {
-        this.api().columns([3]).search(countries[0].ISO2).draw();
-        dataTableHelper.setToolbar(contextState.toolbar, [jsonTranslate.country]);
+      initComplete: function initComplete(event) {
+        var $selfTable = this;
+        $selfTable.api().columns([3]).search(countries[0].ISO2).draw();
+        dataTableHelper.setToolbar(contextState.toolbar, contextState.toolbarNames, contextState.tableId);
         select_country = formhelper.setSelectControl('#countries-dropdown', countries, 'ISO2', 'Name');
         select_country.on('change', function () {
-          table.columns([3]).search(this.value).draw();
+          $selfTable.api().columns([3]).search(this.value).draw();
         });
       }
     }
@@ -307,52 +361,74 @@ var woocfcl_settings = function ($, window, document, undefined) {
     getjsonlang: function getjsonlang() {
       return this.jsonUrlLang.replace('{0}', currentLang);
     },
-    appendsHideData: function appendsHideData(data, type, full, meta) {
-      var rowId = this.setDataRow(meta);
-      return "<div class='novisible' ".concat(rowId, ">").concat(data, "</div>");
+    getDataTable: function getDataTable(dataTable) {
+      return commHelper.isString(dataTable) ? $(dataTable) : dataTable;
     },
-    appendswitch: function appendswitch(data, type, row, meta) {
-      var cheched = Number(data) === 1 ? 'checked' : '';
-      var rowId = this.setDataRow(meta); // console.log(jsonTranslate);
-
-      return "<div class=\"switch\"><label>".concat(jsonTranslate.no, "<input type=\"checkbox\" ").concat(cheched, "  ").concat(rowId, "  class=\"switch\"><span class=\"lever\"></span> ").concat(jsonTranslate.yes, "</label></div>");
+    setPropertiesInField: function setPropertiesInField(cols, meta) {
+      var extraName = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      return {
+        name: " name=\"row-".concat(cols[meta.col]).concat(extraName, "\" "),
+        dataColName: " data-colName=\"".concat(cols[meta.col], "\" "),
+        rowId: " data-row=\"".concat(meta.row, "\" ")
+      };
+    },
+    getPropertiesInField: function getPropertiesInField($this, dataTable) {
+      var $dataTable = this.getDataTable(dataTable);
+      var rowId = $this.attr('data-row');
+      return {
+        name: $this.prop('name'),
+        dataColName: $this.attr('data-colName'),
+        rowId: rowId,
+        data: $dataTable.row(rowId).data()
+      };
+    },
+    appendsHideData: function appendsHideData(value, type, row, meta, cols) {
+      var prop = this.setPropertiesInField(cols, meta);
+      return "<div ".concat(prop.name, " class='novisible' ").concat(prop.rowId, " ").concat(prop.dataColName, ">").concat(value, "</div>");
+    },
+    appendswitch: function appendswitch(value, type, row, meta, cols) {
+      var cheched = commHelper.getBool(value) ? 'checked' : '';
+      var prop = this.setPropertiesInField(cols, meta);
+      return "<div class=\"switch\"><label>".concat(jsonTranslate.no, "<input ").concat(prop.name, " type=\"checkbox\" ").concat(cheched, " ").concat(prop.rowId, " ").concat(prop.dataColName, "><span class=\"lever\"></span> ").concat(jsonTranslate.yes, "</label></div>");
     },
     onChangeSwitch: function onChangeSwitch(event) {
-      //if ($('#select_all:checked').val() === 'on') table.rows().select();
-      if ($(this).is(':checked')) table.rows().select();else table.rows().deselect();
+      var $self = $(this);
+      var $dataTable = dataTableHelper.getDataTable(event.data.dtable);
+      var rowInfo = dataTableHelper.getPropertiesInField($self, $dataTable);
+      var status = $(this).prop('checked') ? 1 : 0;
+      rowInfo.data[rowInfo.dataColName] = status;
+      $dataTable.row(rowInfo.rowId).data(rowInfo.data).invalidate();
     },
-    appendsCheckboxselection: function appendsCheckboxselection(data, type, full, meta) {
-      var rowId = this.setDataRow(meta);
-      return "<input type=\"checkbox\" name=\"id[]\" class=\"filled-in\" ".concat(rowId, " value=\"0\">");
+    appendsCheckboxselection: function appendsCheckboxselection(data, type, full, meta, cols) {
+      var prop = this.setPropertiesInField(cols, meta);
+      return "<input type=\"checkbox\" name=\"id[]\" class=\"filled-in\" ".concat(prop.rowId, " value=\"0\">");
     },
-    appendsButtonEdit: function appendsButtonEdit(data, type, full, meta) {
-      var rowId = this.setDataRow(meta);
-      return "<button class=\"btn btn-xs btn-edit\" ".concat(rowId, " type=\"button\" >").concat(jsonTranslate.edit, "</button>");
+    appendsButtonEdit: function appendsButtonEdit(data, type, full, meta, cols) {
+      var prop = this.setPropertiesInField(cols, meta, 'Edit');
+      return "<button ".concat(prop.name, " class=\"btn btn-xs btn-edit\" ").concat(prop.rowId, " ").concat(prop.dataColName, " type=\"button\" >").concat(jsonTranslate.edit, "</button>");
     },
-    setToolbar: function setToolbar(toolbar, items) {
-      var tool = toolbar;
-      var i = 0;
-      items.forEach(function (item) {
-        tool = tool.replace("{".concat(i, "}"), item);
-        i += 1;
-      });
-      $('div.toolbar').html(tool);
-      $('.dataTables_length').appendTo('div.toolbar');
-      $('.dataTables_length select').formSelect();
-    },
-    setDataRow: function setDataRow(meta) {
-      return " data-row=\"".concat(meta.row, "\" ");
-    },
-    getDataRow: function getDataRow(self) {
-      currentRowId = $(self).attr('data-row');
-      return table.row(currentRowId).data();
+    setToolbar: function setToolbar(toolbar, items, tableId) {
+      var translItems = commHelper.transformJsonToArray(jsonTranslate, items);
+      var tool = commHelper.replaceStringFromArray(toolbar, translItems);
+      var $tableToolbar = $(tableId + '_wrapper');
+      $tableToolbar.find('div.toolbar').html(tool);
+      $tableToolbar.find('.dataTables_length').appendTo('div.toolbar');
+      $tableToolbar.find('.dataTables_length select').formSelect();
     },
     setOnCheckedAll: function setOnCheckedAll(event) {
       //if ($('#select_all:checked').val() === 'on') table.rows().select();
-      if ($(this).is(':checked')) table.rows().select();else table.rows().deselect();
+      var $dataTable = dataTableHelper.getDataTable(event.data.dtable);
+      if ($(this).is(':checked')) $dataTable.rows().select();else $dataTable.rows().deselect();
     }
   };
   var formhelper = {
+    reset: function reset(form) {
+      var $form = commHelper.isString(form) ? $(form) : form;
+      $form.get(0).reset();
+      $form.find('input:checkbox').removeAttr('checked');
+      $form.find('input:radio').removeAttr('checked');
+      $form.find('select').prop('selectedIndex', 0);
+    },
     setSelectControl: function setSelectControl(name, data, keyvalue, keyname) {
       var control = $(name);
       control.empty();
@@ -363,36 +439,132 @@ var woocfcl_settings = function ($, window, document, undefined) {
       control.formSelect();
       return control;
     },
-    set_property_field_value: function set_property_field_value(form, type, name, value, multiple) {
-      switch (type) {
+    RowIdSet: function RowIdSet($form, rowId) {
+      this.setFieldValuebyName($form, 'rowId', rowId);
+    },
+    RowIdGet: function RowIdGet($form) {
+      return this.getFieldByName($form, 'rowId');
+    },
+    updateFormFieldsFromDatatable: function updateFormFieldsFromDatatable(form, rowInfo) {
+      var $form = commHelper.isString(form) ? $(form) : form;
+      formhelper.reset($form);
+      this.RowIdSet($form, rowInfo.rowId);
+
+      for (var key in rowInfo.data) {
+        this.setFieldValuebyName($form, key, rowInfo.data[key]);
+      }
+    },
+    updateDatatableFromFormFields: function updateDatatableFromFormFields(form, dataTable) {
+      var $form = commHelper.isString(form) ? $(form) : form;
+      var $dataTable = commHelper.isString(dataTable) ? $(dataTable) : dataTable;
+      var rowId = this.RowIdGet($form).value;
+      var currentRow = $dataTable.row(rowId).data();
+      console.log(currentRow, rowId);
+
+      for (var key in currentRow) {
+        var field = this.getFieldByName($form, key);
+        console.log(key, field);
+        currentRow[key] = commHelper.isEmpty(field) ? currentRow[key] : commHelper.getValue(field.value, currentRow[key]);
+      }
+
+      console.log(currentRow);
+      $dataTable.row(rowId).data(currentRow).invalidate(); // Refresh table
+
+      $dataTable.draw(false);
+    },
+    setFieldValuebyName: function setFieldValuebyName(form, name, value) {
+      var multiple = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+      var $form = commHelper.isString(form) ? $(form) : form;
+      var field = this.getFieldByName($form, name);
+      if (commHelper.isEmpty(field)) return;
+
+      switch (field.tag) {
         case 'select':
           if (multiple == 1) {
             value = typeof value === 'string' ? value.split(',') : value;
-            name = "".concat(name, "[]");
-            form.find("select[name=\"i_".concat(name, "\"]")).val(value).trigger('change');
+            field.control.val(value).trigger('change');
           } else {
-            form.find("select[name=\"i_".concat(name, "\"]")).val(value);
+            field.control.val(value);
           }
 
           break;
 
-        case 'checkbox':
-          value = value == 1;
-          form.find("input[name=i_".concat(name, "]")).prop('checked', value);
-          break;
-
         case 'textarea':
-          value = value ? decodeHtml(value) : value;
-          form.find("textarea[name=i_".concat(name, "]")).val(value);
+          value = value ? commHelper.decodeHtml(value) : value;
+          field.control.val(value);
           break;
 
         default:
-          value = value ? decodeHtml(value) : value;
-          form.find("input[name=i_".concat(name, "]")).val(value);
+          switch (field.type) {
+            case 'checkbox':
+              value = commHelper.getBool(value) ? field.control.attr('checked', 'checked') : field.control.removeAttr('checked');
+              break;
+
+            case 'radio':
+              value = value ? commHelper.decodeHtml(value) : value;
+              field.control.filter("[value='".concat(value, "']")).attr('checked', 'checked');
+              break;
+
+            default:
+              value = value ? commHelper.decodeHtml(value) : value;
+              field.control.val(value);
+          }
+
+      }
+    },
+    getFieldByName: function getFieldByName($objForm, name) {
+      var $field = $objForm.find("[name='".concat(name, "']"));
+
+      if ($field.length > 0) {
+        var type = $field.attr('type');
+        var tag = $field[0].tagName.toLowerCase();
+        var value = '';
+
+        switch (tag) {
+          case 'select':
+          case 'textarea':
+            value = $field.val();
+            value = commHelper.getValue(value);
+            break;
+
+          default:
+            switch (type) {
+              case 'checkbox':
+                value = $field.prop('checked') ? 1 : 0;
+                break;
+
+              case 'radio':
+                value = $field.find(':checked').val();
+                value = commHelper.getValue(value);
+                break;
+
+              default:
+                value = $field.val();
+                value = commHelper.getValue(value);
+            }
+
+        }
+
+        return {
+          control: $field,
+          tag: tag,
+          type: type,
+          value: value
+        };
+      } else {
+        return null;
       }
     }
   };
   var app = {
+    // formNames: { action: '#woocfcl-form-field-option', edit: '#woocfcl-form-row-edit', add: '' },
+    formAction: $('#woocfcl-form-field-option'),
+    formEdit: $('#woocfcl-form-row-edit'),
+    formAdd: '',
+    updateAction: function updateAction(action) {
+      $action_changes.push(action);
+      formhelper.setFieldValuebyName(app.formAction, 'fieldsAction', action);
+    },
     showSpinner: function showSpinner() {
       loader.fadeIn();
       container.fadeOut();
@@ -405,55 +577,34 @@ var woocfcl_settings = function ($, window, document, undefined) {
   $(function () {
     if (config.view === 'states') {
       contextState.datatable.language.url = dataTableHelper.getjsonlang();
-      table = $('#options-datatable').DataTable(contextState.datatable); // set search text on specific column
+      table = $(contextState.tableId).DataTable(contextState.datatable); // set search text on specific column
 
-      table.on('click', '#select_all', dataTableHelper.setOnCheckedAll); // Handle click on "Edit" button
+      table.on('click', '#select_all', {
+        dtable: table
+      }, dataTableHelper.setOnCheckedAll); // Handle click on "Edit" button
 
-      table.on('change', '.switch input[type=checkbox]', function () {
-        var data = dataTableHelper.getDataRow(this);
-        var status = $(this).prop('checked') ? 1 : 0;
-        data.enabled = status;
-        table.row(rowId).data(data).invalidate();
-      }); // Handle click on "Edit" button
+      table.on('change', 'div.switch input[name="row-enabled"]', {
+        dtable: table
+      }, dataTableHelper.onChangeSwitch); // Handle click on "Edit" button
 
-      table.on('click', '.btn-edit', function () {
-        // Reset form
-        currentRowId = $(this).attr('data-row');
-        var data = table.row(currentRowId).data();
-        $('#form-state-edit').get(0).reset();
-        $('#form-state-edit input:checkbox').removeAttr('checked');
-        $("#form-state-edit .modal-body input[name='RowId']").val(currentRowId);
-
-        for (var key in data) {
-          var inp = $("#form-state-edit .modal-body input[name='".concat(key, "']"));
-
-          if (inp.length > 0) {
-            if (inp.attr('type') === 'checkbox' && Number(data[key]) === 1) inp.attr('checked', 'checked');else inp.val(data[key]);
-          }
-        }
-
-        modal.modal('open');
+      table.on('click', 'button[name="row-ButtonEdit"]', function (event) {
+        var $self = $(this);
+        var rowInfo = dataTableHelper.getPropertiesInField($self, table);
+        console.log(rowInfo);
+        formhelper.updateFormFieldsFromDatatable($formRowEdit, rowInfo);
+        $modalRowEdit.modal('open');
+      });
+      table.on('row-reordered', function (e, diff, edit) {
+        // for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
+        // 	$(diff[i].node).addClass("reordered");
+        // }
+        console.log("reorden", e, diff, edit);
       }); // Handle form submission event
 
-      $('#form-state-edit').on('submit', function (e) {
-        e.preventDefault(); // Update table data
-
-        var data = table.row(currentRowId).data();
-
-        for (var key in data) {
-          console.log(key);
-          var inp = $("#form-state-edit .modal-body input[name='".concat(key, "']"));
-
-          if (inp.length > 0) {
-            if (inp.attr('type') === 'checkbox') data[key] = $(this).prop('checked') ? 1 : 0;else data[key] = inp.val();
-          }
-        }
-
-        console.log(data);
-        table.row(row).data(data).invalidate(); // Refresh table
-
-        table.draw(false);
-        modal.modal('close');
+      $formRowEdit.on('submit', function (e) {
+        e.preventDefault();
+        formhelper.updateDatatableFromFormFields($formRowEdit, table);
+        $modalRowEdit.modal('close');
       });
       app.hideSpinner();
     } else {
@@ -756,8 +907,8 @@ var woocfcl_settings = function ($, window, document, undefined) {
     form.find('.row-validate').show();
   }
   /*------------------------------------
-  	*---- OPTIONS FUNCTIONS - SATRT ------
-  	*------------------------------------*/
+   *---- OPTIONS FUNCTIONS - SATRT ------
+   *------------------------------------*/
 
 
   function get_options(form) {
@@ -837,8 +988,8 @@ var woocfcl_settings = function ($, window, document, undefined) {
     }
   }
   /*------------------------------------
-  	*---- OPTIONS FUNCTIONS - END --------
-  	*------------------------------------*/
+   *---- OPTIONS FUNCTIONS - END --------
+   *------------------------------------*/
 
 
   function prepare_field_order_indexes() {
@@ -932,4 +1083,10 @@ function woocfclAddNewOptionRow(elm) {
 
 function woocfclRemoveOptionRow(elm) {
   woocfcl_settings.removeOptionRow(elm);
-}
+} // ("#myid").on('click', {arg1: 'hello', arg2: 'bye'}, myfunction);
+// function myfunction(e) {
+//     var arg1 = e.data.arg1;
+//     var arg2 = e.data.arg2;
+//     alert(arg1);
+//     alert(arg2);
+// }

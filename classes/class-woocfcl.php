@@ -169,7 +169,7 @@ class WOOCFCL {
 		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-wpappoptions.php';
 		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-wpstates.php';
 		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-wpcities.php';
-		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-cities.php';
+		
 		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-wpbilling.php';
 		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-billing.php';
 		require_once WOOCFCL_PATH_CLASS . 'class-woocfcl-wpshipping.php';

@@ -4,8 +4,8 @@
  * Description: woocommerce customization for chile and checkout fields Editor(Add, Edit, Delete and re-arrange fields).
  * Author:      Leonardo Espinoza
  * Version:     1.0.0
- * Author URI:  https://www.leoespinoz.dev
- * Plugin URI:  https://www.leoespinoz.dev
+ * Author URI:  leoespinoza.github.io
+ * Plugin URI:  leoespinoza.github.io
  * Text Domain: woo-chile-custom
  * Domain Path: /languages
  * Requires at least: 4.0

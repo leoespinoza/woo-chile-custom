@@ -13,10 +13,6 @@ if(!class_exists('WOOCFCL_WPStates')):
         use WOOCFCL_WPOptions {
             WOOCFCL_WPOptions::__construct as private __vpoConstruct;
         }
-
-
-
-
         /**
          * Constructor.
          *
@@ -50,12 +46,12 @@ if(!class_exists('WOOCFCL_WPStates')):
                             
                             $this->option_value[$code]= WOOCFCL_Utils::array_empty($statestemp)? $this->set_woocom_fields_toapp_adapter($stateswoo,$code):$this->set_plugin_fields_toapp_adapter($statestemp[$code],$code);
 
-                            $this->option_woocom[$code]=WOOCFCL_Utils::array_empty($statestemp)? WOOCFCL_Utils::array_get_value($stateswoo,$code):$this->set_app_fields_towoocom_adapter($statestemp,$code);
+                            // $this->option_woocom[$code]=WOOCFCL_Utils::array_empty($this->option_value[$code])? WOOCFCL_Utils::array_get_value($stateswoo,$code):$this->set_app_fields_towoocom_adapter($this->option_value[$code],$code);
                         }
                         else {
                             $this->option_value[$code]=$this->set_woocom_fields_toapp_adapter($stateswoo,$code);
-                            $this->option_woocom[$code]= WOOCFCL_Utils::array_get_value($stateswoo,$code);
                         }
+                        $this->option_woocom[$code]= $this->set_app_fields_towoocom_adapter($this->option_value[$code],$code);
                     }
                 }  
                 if (WOOCFCL()->app->onlyWoocommCountry &&  !WOOCFCL_Utils::array_empty(WOOCFCL()->app->countriesToDelete)) {
@@ -90,7 +86,7 @@ if(!class_exists('WOOCFCL_WPStates')):
                         $fields,
                         function (&$item, $key) use (&$i) {
                             $name=$item;
-                            $item=array('Name'=>$name,'enabled'=>1,'AdditionalCode'=>'','NumberCode'=>0,'RowOrder'=>$i );
+                            $item=array('Name'=>$name,'enabled'=>1,'AdditionalCode'=>'0','NumberCode'=>0,'RowOrder'=>$i );
                             $i++;
                         }
                     );
@@ -116,12 +112,14 @@ if(!class_exists('WOOCFCL_WPStates')):
         }
 
         private function set_app_fields_towoocom_adapter($states,$key){
-            $fields=WOOCFCL_Utils::array_get_value($states,$key);
-
-            return !WOOCFCL_Utils::array_empty($fields)?array_map(
-                        function($state) { return $state['Name']; },
-                        $fields
-                ):$fields;
+            $fields=WOOCFCL_Utils::array_empty($states)?array():$states;
+            $fields=array_filter(
+                    $fields, function($state) {
+                        return ( $state['enabled']==1); }
+                );
+            return array_map(
+                    function($state) { return $state['Name']; },$fields
+                );
         }
         
         private function set_app_fields_todatatable_adapter($country_state){
